@@ -1,6 +1,6 @@
 import { Button } from "./ui/button"
 
-interface IEmployeeInfo {
+export interface IEmployeeInfo {
   id: string,
   name: string,
   surname: string,
