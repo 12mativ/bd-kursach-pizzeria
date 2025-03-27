@@ -4,6 +4,12 @@ import "./globals.css";
 import { Header } from "../components/header/header";
 import StoreProvider from "../components/providers/redux-store-provider";
 
+export const metadata: Metadata = {
+  title: "Pizzeria",
+  description:
+    "Pizzeria delicious pizza pepperoni italia",
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
