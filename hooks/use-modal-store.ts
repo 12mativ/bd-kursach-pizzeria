@@ -1,8 +1,10 @@
 import { create } from "zustand";
 
-export type ModalType = "addEmployee";
+export type ModalType = "createEmployee";
 
-export interface ModalData {}
+export interface ModalData {
+  
+}
 
 interface ModalStore {
   type: ModalType | null;

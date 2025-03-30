@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Header } from "../components/header/header";
 import StoreProvider from "../components/providers/redux-store-provider";
+import { ModalProvider } from "@/components/providers/modal-provider";
 
 export const metadata: Metadata = {
   title: "Pizzeria",
@@ -19,6 +20,7 @@ export default function RootLayout({
     <html lang="en">
       <body className="bg-neutral-900 text-white">
         <StoreProvider>
+          <ModalProvider />
           <Header />
           {children}
         </StoreProvider>
