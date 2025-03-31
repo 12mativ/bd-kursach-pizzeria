@@ -8,19 +8,21 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
 import { useModal } from "@/hooks/use-modal-store";
 import { FormError } from "../ui/form-error";
 
-export const CreateEmployeeModal = () => {
-  const { isOpen, type, onClose } = useModal();
+export const EditEmployeeModal = () => {
+  const { isOpen, type, onClose, data } = useModal();
+  const employeeData = data.employeeData;
 
   const initialState: ICreateEmployeeActionState = {
-    name: "",
-    surname: "",
-    patronymic: "",
-    phone: "",
+    id: employeeData?.id,
+    name: employeeData?.name ?? "",
+    surname: employeeData?.surname ?? "",
+    patronymic: employeeData?.patronymic ?? "",
+    phone: employeeData?.phone ?? "",
   };
 
   const [state, formAction] = useActionState(createEmployee, initialState);
 
-  const isModalOpen = isOpen && type === "createEmployee";
+  const isModalOpen = isOpen && type === "editEmployee";
 
   const handleCreateEntityClassClose = () => {
     onClose();
@@ -37,7 +39,7 @@ export const CreateEmployeeModal = () => {
       <DialogContent className="bg-zinc-900 border-zinc-800">
         <DialogHeader>
           <DialogTitle className="text-zinc-100">
-            Создать нового сотрудника
+            Изменить данные сотрудника
           </DialogTitle>
         </DialogHeader>
         <form action={formAction} className="space-y-4">

@@ -1,4 +1,4 @@
-import { EmployeeCard, IEmployeeInfo } from "@/components/employee-card";
+import { EmployeeCard, IEmployeeInfo } from "@/components/employee-card/employee-card";
 import { CreateEmployeeButton } from "./create-employee-button";
 
 export default async function Page() {

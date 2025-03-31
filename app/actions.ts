@@ -6,16 +6,18 @@ import { z } from "zod";
 const createEmployeeSchema = z.object({
   name: z
     .string()
-    .min(2, { message: "Длина имени должна превышать 1 символ" })
+    .min(2, { message: "Длина имени должна превышать 2 символа" })
     .max(50, { message: "Длина имени не должна превышать 50 символов" }),
   surname: z
     .string()
-    .min(2, { message: "Длина фамилии должна превышать 1 символ" })
+    .min(2, { message: "Длина фамилии должна превышать 2 символа" })
     .max(50, { message: "Длина фамилии не должна превышать 50 символов" }),
   patronymic: z
     .string()
-    .min(2, { message: "Длина отчества должна превышать 1 символ" })
-    .max(50, { message: "Длина отчества не должна превышать 50 символов" }),
+    .min(2, { message: "Длина отчества должна превышать 2 символа" })
+    .max(50, { message: "Длина отчества не должна превышать 50 символов" })
+    .optional()
+    .or(z.literal('')),
   phone: z
     .string()
     .regex(/^7\d{10}$/, {
@@ -24,6 +26,7 @@ const createEmployeeSchema = z.object({
 });
 
 export interface ICreateEmployeeActionState {
+  id?: number;
   name?: string;
   surname?: string;
   patronymic?: string;
@@ -35,6 +38,7 @@ export interface ICreateEmployeeActionState {
     phone?: string[];
   };
   error?: string;
+  success?: boolean;
 }
 
 export async function createEmployee(
@@ -66,6 +70,9 @@ export async function createEmployee(
 
   const response = await fetch(`${process.env.BACKEND_URL}/employees`, {
     method: "POST",
+    headers: {
+      'Content-Type': 'application/json'
+    },
     body: JSON.stringify({ name, surname, patronymic, phone }),
   });
 
@@ -78,11 +85,66 @@ export async function createEmployee(
 
   revalidatePath("/employees");
   return {
+    name: "",
+    surname: "",
+    patronymic: "",
+    phone: "",
+    fieldErrors: undefined,
+    error: undefined,
+    success: true,
+  };
+}
+
+export async function editEmployee(
+  prevState: ICreateEmployeeActionState,
+  formData: FormData
+): Promise<ICreateEmployeeActionState> {
+  const name = formData.get("name") as string;
+  const surname = formData.get("surname") as string;
+  const patronymic = formData.get("patronymic") as string;
+  const phone = formData.get("phone") as string;
+
+  const validatedFields = createEmployeeSchema.safeParse({
     name,
     surname,
     patronymic,
     phone,
+  });
+
+  if (!validatedFields.success) {
+    return {
+      ...prevState,
+      name,
+      surname,
+      patronymic,
+      phone,
+      fieldErrors: validatedFields.error.flatten().fieldErrors,
+    };
+  }
+
+  const response = await fetch(`${process.env.BACKEND_URL}/employees/${prevState.id}`, {
+    method: "PATCH",
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ name, surname, patronymic, phone }),
+  });
+
+  if (!response.ok) {
+    return {
+      ...prevState,
+      error: "Ошибка при создании сотрудника",
+    };
+  }
+
+  revalidatePath("/employees");
+  return {
+    name: "",
+    surname: "",
+    patronymic: "",
+    phone: "",
     fieldErrors: undefined,
-    error: undefined
+    error: undefined,
+    success: true,
   };
 }

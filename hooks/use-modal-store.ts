@@ -1,9 +1,10 @@
 import { create } from "zustand";
+import { IEmployeeInfo } from "../components/employee-card/employee-card";
 
-export type ModalType = "createEmployee";
+export type ModalType = "createEmployee" | "editEmployee";
 
 export interface ModalData {
-  
+  employeeData?: IEmployeeInfo,
 }
 
 interface ModalStore {

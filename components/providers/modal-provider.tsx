@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { CreateEmployeeModal } from "../modals/create-employee";
+import { EditEmployeeModal } from "../modals/edit-employee";
 
 export function ModalProvider() {
   const [isMounted, setIsMounted] = useState(false);
@@ -17,6 +18,7 @@ export function ModalProvider() {
   return (
     <>
       <CreateEmployeeModal />
+      <EditEmployeeModal />
     </>
   );
 }

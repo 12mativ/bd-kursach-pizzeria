@@ -1,4 +1,4 @@
-import { EmployeeCard } from "@/components/employee-card";
+import { EmployeeCard } from "@/components/employee-card/employee-card";
 import Link from "next/link";
 import { Button } from "../../components/ui/button";
 import { JobCard } from "../../components/job-card";
