@@ -99,11 +99,12 @@ export async function editEmployee(
   prevState: ICreateEmployeeActionState,
   formData: FormData
 ): Promise<ICreateEmployeeActionState> {
+  const id = formData.get("id");
   const name = formData.get("name") as string;
   const surname = formData.get("surname") as string;
   const patronymic = formData.get("patronymic") as string;
   const phone = formData.get("phone") as string;
-
+  debugger
   const validatedFields = createEmployeeSchema.safeParse({
     name,
     surname,
@@ -119,10 +120,11 @@ export async function editEmployee(
       patronymic,
       phone,
       fieldErrors: validatedFields.error.flatten().fieldErrors,
+      success: false
     };
   }
 
-  const response = await fetch(`${process.env.BACKEND_URL}/employees/${prevState.id}`, {
+  const response = await fetch(`${process.env.BACKEND_URL}/employees/${id}`, {
     method: "PATCH",
     headers: {
       'Content-Type': 'application/json'
@@ -134,9 +136,10 @@ export async function editEmployee(
     return {
       ...prevState,
       error: "Ошибка при создании сотрудника",
+      success: false
     };
   }
-
+  debugger
   revalidatePath("/employees");
   return {
     name: "",

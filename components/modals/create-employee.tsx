@@ -30,7 +30,7 @@ export const CreateEmployeeModal = () => {
     if (state?.success) {
       onClose();
     }
-  }, [state?.success, onClose]);
+  }, [state, onClose]);
 
   return (
     <Dialog open={isModalOpen} onOpenChange={handleCreateEntityClassClose}>

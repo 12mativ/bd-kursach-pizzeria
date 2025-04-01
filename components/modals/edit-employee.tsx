@@ -1,6 +1,10 @@
 "use client";
 
-import { createEmployee, ICreateEmployeeActionState } from "@/app/actions";
+import {
+  createEmployee,
+  editEmployee,
+  ICreateEmployeeActionState,
+} from "@/app/actions";
 import { useActionState, useEffect } from "react";
 import { Input } from "../ui/input";
 import { SubmitButton } from "../submit-button";
@@ -18,9 +22,11 @@ export const EditEmployeeModal = () => {
     surname: employeeData?.surname ?? "",
     patronymic: employeeData?.patronymic ?? "",
     phone: employeeData?.phone ?? "",
+    success: false,
+    error: ""
   };
 
-  const [state, formAction] = useActionState(createEmployee, initialState);
+  const [state, formAction] = useActionState(editEmployee, initialState);
 
   const isModalOpen = isOpen && type === "editEmployee";
 
@@ -33,6 +39,8 @@ export const EditEmployeeModal = () => {
       onClose();
     }
   }, [state?.success, onClose]);
+
+  if (!employeeData) return null;
 
   return (
     <Dialog open={isModalOpen} onOpenChange={handleCreateEntityClassClose}>
@@ -53,7 +61,7 @@ export const EditEmployeeModal = () => {
               name="surname"
               required
               className="bg-zinc-800 border-zinc-700 text-zinc-100"
-              defaultValue={state.surname}
+              defaultValue={employeeData.surname}
             />
             <FormError message={state?.fieldErrors?.surname?.[0]} />
           </div>
@@ -68,7 +76,7 @@ export const EditEmployeeModal = () => {
               name="name"
               required
               className="bg-zinc-800 border-zinc-700 text-zinc-100"
-              defaultValue={state.name}
+              defaultValue={employeeData.name}
             />
             <FormError message={state?.fieldErrors?.name?.[0]} />
           </div>
@@ -82,7 +90,7 @@ export const EditEmployeeModal = () => {
               type="text"
               name="patronymic"
               className="bg-zinc-800 border-zinc-700 text-zinc-100"
-              defaultValue={state.patronymic}
+              defaultValue={employeeData.patronymic}
             />
             <FormError message={state?.fieldErrors?.patronymic?.[0]} />
           </div>
@@ -97,12 +105,21 @@ export const EditEmployeeModal = () => {
               name="phone"
               required
               className="bg-zinc-800 border-zinc-700 text-zinc-100"
-              defaultValue={state.phone}
+              defaultValue={employeeData.phone}
             />
             <FormError message={state?.fieldErrors?.phone?.[0]} />
           </div>
 
-          <SubmitButton text="Создать" />
+          <input
+            id="id"
+            type="hidden"
+            name="id"
+            defaultValue={employeeData.id}
+          />
+
+          <SubmitButton text="Сохранить" />
+
+          <FormError message={state?.error} />
 
           <p aria-live="polite" className="sr-only" role="status">
             {state?.fieldErrors?.name?.[0]}
