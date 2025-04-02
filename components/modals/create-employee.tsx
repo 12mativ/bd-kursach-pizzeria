@@ -22,10 +22,6 @@ export const CreateEmployeeModal = () => {
 
   const isModalOpen = isOpen && type === "createEmployee";
 
-  const handleCreateEntityClassClose = () => {
-    onClose();
-  };
-
   useEffect(() => {
     if (state?.success) {
       onClose();
@@ -33,7 +29,7 @@ export const CreateEmployeeModal = () => {
   }, [state, onClose]);
 
   return (
-    <Dialog open={isModalOpen} onOpenChange={handleCreateEntityClassClose}>
+    <Dialog open={isModalOpen} onOpenChange={onClose}>
       <DialogContent className="bg-zinc-900 border-zinc-800">
         <DialogHeader>
           <DialogTitle className="text-zinc-100">

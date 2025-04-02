@@ -17,12 +17,10 @@ const createEmployeeSchema = z.object({
     .min(2, { message: "Длина отчества должна превышать 2 символа" })
     .max(50, { message: "Длина отчества не должна превышать 50 символов" })
     .optional()
-    .or(z.literal('')),
-  phone: z
-    .string()
-    .regex(/^7\d{10}$/, {
-      message: "Номер телефона должен быть в формате 79999999999",
-    }),
+    .or(z.literal("")),
+  phone: z.string().regex(/^7\d{10}$/, {
+    message: "Номер телефона должен быть в формате 79999999999",
+  }),
 });
 
 export interface ICreateEmployeeActionState {
@@ -71,7 +69,7 @@ export async function createEmployee(
   const response = await fetch(`${process.env.BACKEND_URL}/employees`, {
     method: "POST",
     headers: {
-      'Content-Type': 'application/json'
+      "Content-Type": "application/json",
     },
     body: JSON.stringify({ name, surname, patronymic, phone }),
   });
@@ -104,7 +102,7 @@ export async function editEmployee(
   const surname = formData.get("surname") as string;
   const patronymic = formData.get("patronymic") as string;
   const phone = formData.get("phone") as string;
-  debugger
+
   const validatedFields = createEmployeeSchema.safeParse({
     name,
     surname,
@@ -120,14 +118,14 @@ export async function editEmployee(
       patronymic,
       phone,
       fieldErrors: validatedFields.error.flatten().fieldErrors,
-      success: false
+      success: false,
     };
   }
 
   const response = await fetch(`${process.env.BACKEND_URL}/employees/${id}`, {
     method: "PATCH",
     headers: {
-      'Content-Type': 'application/json'
+      "Content-Type": "application/json",
     },
     body: JSON.stringify({ name, surname, patronymic, phone }),
   });
@@ -136,18 +134,42 @@ export async function editEmployee(
     return {
       ...prevState,
       error: "Ошибка при создании сотрудника",
-      success: false
+      success: false,
     };
   }
-  debugger
+
   revalidatePath("/employees");
   return {
-    name: "",
-    surname: "",
-    patronymic: "",
-    phone: "",
+    name: name,
+    surname: surname,
+    patronymic: patronymic,
+    phone: phone,
     fieldErrors: undefined,
     error: undefined,
     success: true,
+  };
+}
+
+export async function deleteEmployee(
+  prevState: {error: string},
+  formData: FormData
+) {
+  const id = formData.get("id");
+
+  const response = await fetch(`${process.env.BACKEND_URL}/employees/${id}`, {
+    method: "DELETE",
+  });
+
+  if (!response.ok) {
+    return {
+      error: "Ошибка при удалении сотрудника",
+      success: false
+    };
+  }
+
+  revalidatePath("/employees");
+  return {
+    error: "",
+    success: true
   };
 }

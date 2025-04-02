@@ -1,16 +1,15 @@
 "use client";
 
 import {
-  createEmployee,
   editEmployee,
-  ICreateEmployeeActionState,
+  ICreateEmployeeActionState
 } from "@/app/actions";
+import { useModal } from "@/hooks/use-modal-store";
 import { useActionState, useEffect } from "react";
-import { Input } from "../ui/input";
 import { SubmitButton } from "../submit-button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
-import { useModal } from "@/hooks/use-modal-store";
 import { FormError } from "../ui/form-error";
+import { Input } from "../ui/input";
 
 export const EditEmployeeModal = () => {
   const { isOpen, type, onClose, data } = useModal();
@@ -30,20 +29,16 @@ export const EditEmployeeModal = () => {
 
   const isModalOpen = isOpen && type === "editEmployee";
 
-  const handleCreateEntityClassClose = () => {
-    onClose();
-  };
-
   useEffect(() => {
     if (state?.success) {
       onClose();
     }
-  }, [state?.success, onClose]);
+  }, [state, onClose]);
 
   if (!employeeData) return null;
 
   return (
-    <Dialog open={isModalOpen} onOpenChange={handleCreateEntityClassClose}>
+    <Dialog open={isModalOpen} onOpenChange={onClose}>
       <DialogContent className="bg-zinc-900 border-zinc-800">
         <DialogHeader>
           <DialogTitle className="text-zinc-100">
