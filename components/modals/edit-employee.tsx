@@ -3,7 +3,7 @@
 import {
   editEmployee,
   ICreateEmployeeActionState
-} from "@/app/actions";
+} from "@/app/employees/actions";
 import { useModal } from "@/hooks/use-modal-store";
 import { useActionState, useEffect } from "react";
 import { SubmitButton } from "../submit-button";
@@ -56,7 +56,7 @@ export const EditEmployeeModal = () => {
               name="surname"
               required
               className="bg-zinc-800 border-zinc-700 text-zinc-100"
-              defaultValue={employeeData.surname}
+              defaultValue={employeeData?.surname}
             />
             <FormError message={state?.fieldErrors?.surname?.[0]} />
           </div>
@@ -71,7 +71,7 @@ export const EditEmployeeModal = () => {
               name="name"
               required
               className="bg-zinc-800 border-zinc-700 text-zinc-100"
-              defaultValue={employeeData.name}
+              defaultValue={employeeData?.name}
             />
             <FormError message={state?.fieldErrors?.name?.[0]} />
           </div>
@@ -85,7 +85,7 @@ export const EditEmployeeModal = () => {
               type="text"
               name="patronymic"
               className="bg-zinc-800 border-zinc-700 text-zinc-100"
-              defaultValue={employeeData.patronymic}
+              defaultValue={employeeData?.patronymic}
             />
             <FormError message={state?.fieldErrors?.patronymic?.[0]} />
           </div>
@@ -100,7 +100,7 @@ export const EditEmployeeModal = () => {
               name="phone"
               required
               className="bg-zinc-800 border-zinc-700 text-zinc-100"
-              defaultValue={employeeData.phone}
+              defaultValue={employeeData?.phone}
             />
             <FormError message={state?.fieldErrors?.phone?.[0]} />
           </div>
@@ -109,7 +109,7 @@ export const EditEmployeeModal = () => {
             id="id"
             type="hidden"
             name="id"
-            defaultValue={employeeData.id}
+            defaultValue={employeeData?.id}
           />
 
           <SubmitButton text="Сохранить" />

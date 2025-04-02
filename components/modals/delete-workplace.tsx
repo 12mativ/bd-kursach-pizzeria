@@ -1,19 +1,14 @@
 "use client";
 
-import {
-  createEmployee,
-  deleteEmployee,
-  ICreateEmployeeActionState,
-} from "@/app/employees/actions";
+import { deleteWorkplace } from "@/app/workplaces/actions";
 import { useActionState, useEffect } from "react";
-import { Input } from "../ui/input";
-import { SubmitButton } from "../submit-button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
 import { useModal } from "@/hooks/use-modal-store";
 import { FormError } from "../ui/form-error";
 import { Button } from "../ui/button";
+import { SubmitButton } from "../submit-button";
 
-export const DeleteEmployeeModal = () => {
+export const DeleteWorkplaceModal = () => {
   const { isOpen, type, onClose, data } = useModal();
 
   const initialState = {
@@ -21,9 +16,9 @@ export const DeleteEmployeeModal = () => {
     success: false,
   };
 
-  const [state, formAction] = useActionState(deleteEmployee, initialState);
+  const [state, formAction] = useActionState(deleteWorkplace, initialState);
 
-  const isModalOpen = isOpen && type === "deleteEmployee";
+  const isModalOpen = isOpen && type === "deleteWorkplace";
 
   useEffect(() => {
     if (state?.success) {
@@ -36,10 +31,9 @@ export const DeleteEmployeeModal = () => {
       <DialogContent className="bg-zinc-900 border-zinc-800">
         <DialogHeader>
           <DialogTitle className="flex flex-col gap-y-2 text-zinc-100">
-            <p>Вы уверены, что хотите удалить сотрудника?</p>
+            <p>Вы уверены, что хотите удалить рабочее место?</p>
             <p className="text-indigo-500">
-              {data.employeeData?.surname} {data.employeeData?.name}{" "}
-              {data.employeeData?.patronymic}
+              {data.workplaceData?.name}
             </p>
           </DialogTitle>
         </DialogHeader>
@@ -59,7 +53,7 @@ export const DeleteEmployeeModal = () => {
             id="id"
             type="hidden"
             name="id"
-            defaultValue={data.employeeData?.id}
+            defaultValue={data.workplaceData?.id}
           />
 
           <FormError message={state.error} />
@@ -71,4 +65,4 @@ export const DeleteEmployeeModal = () => {
       </DialogContent>
     </Dialog>
   );
-};
+}; 

@@ -1,6 +1,6 @@
 "use client";
 
-import { createEmployee, ICreateEmployeeActionState } from "@/app/actions";
+import { createEmployee, ICreateEmployeeActionState } from "@/app/employees/actions";
 import { useActionState, useEffect } from "react";
 import { Input } from "../ui/input";
 import { SubmitButton } from "../submit-button";

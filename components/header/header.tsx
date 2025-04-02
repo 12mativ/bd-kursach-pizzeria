@@ -4,7 +4,7 @@ export const Header = () => {
   var menuItems = [
     {id: 1, name: "Главная", href: "/"},
     {id: 2, name: "Сотрудники", href: "/employees"},
-    {id: 3, name: "Рабочие места", href: "/jobs"}
+    {id: 3, name: "Рабочие места", href: "/workplaces"}
   ]
 
   return (
