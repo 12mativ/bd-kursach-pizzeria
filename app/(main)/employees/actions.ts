@@ -1,6 +1,8 @@
 "use server";
 
+import { verifySession } from "@/lib/dal";
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 import { z } from "zod";
 
 const createEmployeeSchema = z.object({
@@ -43,6 +45,12 @@ export async function createEmployee(
   prevState: ICreateEmployeeActionState,
   formData: FormData
 ): Promise<ICreateEmployeeActionState> {
+  const { isAuth } = await verifySession();
+
+  if (!isAuth) {
+    redirect("/auth");
+  }
+
   const name = formData.get("name") as string;
   const surname = formData.get("surname") as string;
   const patronymic = formData.get("patronymic") as string;

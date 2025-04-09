@@ -1,6 +1,6 @@
 "use client";
 
-import { deleteWorkplace } from "@/app/workplaces/actions";
+import { deleteWorkplace } from "@/app/(main)/workplaces/actions";
 import { useActionState, useEffect } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
 import { useModal } from "@/hooks/use-modal-store";

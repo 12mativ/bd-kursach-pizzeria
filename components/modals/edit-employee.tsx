@@ -3,7 +3,7 @@
 import {
   editEmployee,
   ICreateEmployeeActionState
-} from "@/app/employees/actions";
+} from "@/app/(main)/employees/actions";
 import { useModal } from "@/hooks/use-modal-store";
 import { useActionState, useEffect } from "react";
 import { SubmitButton } from "../submit-button";

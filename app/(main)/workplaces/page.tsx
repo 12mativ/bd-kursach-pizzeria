@@ -1,5 +1,7 @@
 import { WorkplaceCard } from "@/components/workplace-card/workplace-card";
 import { CreateWorkplaceButton } from "./create-workplace-button";
+import { verifySession } from "@/lib/dal";
+import { redirect } from "next/navigation";
 
 async function getWorkplaces() {
   const res = await fetch(`${process.env.BACKEND_URL}/workplaces`);
@@ -12,6 +14,12 @@ async function getWorkplaces() {
 }
 
 export default async function WorkplacesPage() {
+  const { isAuth } = await verifySession();
+
+  if (!isAuth) {
+    redirect("/auth");
+  }
+
   const workplaces = await getWorkplaces();
 
   return (

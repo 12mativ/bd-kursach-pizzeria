@@ -4,7 +4,7 @@ import {
   createEmployee,
   deleteEmployee,
   ICreateEmployeeActionState,
-} from "@/app/employees/actions";
+} from "@/app/(main)/employees/actions";
 import { useActionState, useEffect } from "react";
 import { Input } from "../ui/input";
 import { SubmitButton } from "../submit-button";

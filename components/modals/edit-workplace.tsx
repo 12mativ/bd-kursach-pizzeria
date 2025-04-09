@@ -1,6 +1,6 @@
 "use client";
 
-import { editWorkplace } from "@/app/workplaces/actions";
+import { editWorkplace } from "@/app/(main)/workplaces/actions";
 import { useModal } from "@/hooks/use-modal-store";
 import { useActionState, useEffect } from "react";
 import { SubmitButton } from "../submit-button";

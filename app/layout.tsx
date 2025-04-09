@@ -21,7 +21,6 @@ export default function RootLayout({
       <body className="bg-neutral-900 text-white">
         <StoreProvider>
           <ModalProvider />
-          <Header />
           {children}
         </StoreProvider>
       </body>

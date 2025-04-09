@@ -1,6 +1,6 @@
 "use client";
 
-import { createWorkplace, ICreateWorkplaceActionState } from "@/app/workplaces/actions";
+import { createWorkplace, ICreateWorkplaceActionState } from "@/app/(main)/workplaces/actions";
 import { useActionState } from "react";
 import { Input } from "../ui/input";
 import { SubmitButton } from "../submit-button";

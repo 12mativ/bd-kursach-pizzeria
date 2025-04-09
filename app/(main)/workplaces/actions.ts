@@ -1,6 +1,8 @@
 "use server";
 
+import { verifySession } from "@/lib/dal";
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 import { z } from "zod";
 
 const createWorkplaceSchema = z.object({
@@ -29,6 +31,12 @@ export async function createWorkplace(
   prevState: ICreateWorkplaceActionState,
   formData: FormData
 ): Promise<ICreateWorkplaceActionState> {
+  const { isAuth } = await verifySession();
+
+  if (!isAuth) {
+    redirect("/auth");
+  }
+
   const name = formData.get("name") as string;
   const status = formData.get("status") as "free" | "occupied" | "partly occupied";
 
