@@ -2,6 +2,7 @@
 
 import { verifySession } from "@/lib/dal";
 import { fetchWithAuth } from "@/utils/fetch";
+import { debug } from "console";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
@@ -32,6 +33,29 @@ const registerEmployeeSchema = z.object({
     .string()
     .min(6, { message: "Пароль должен содержать минимум 6 символов" })
     .max(50, { message: "Пароль не должен превышать 50 символов" }),
+  role: z.enum(["PIZZAMAKER", "MANAGER", "CASHIER"], {
+    required_error: "Выберите роль сотрудника",
+  }),
+});
+
+const editEmployeeSchema = z.object({
+  name: z
+    .string()
+    .min(2, { message: "Длина имени должна превышать 2 символа" })
+    .max(50, { message: "Длина имени не должна превышать 50 символов" }),
+  surname: z
+    .string()
+    .min(2, { message: "Длина фамилии должна превышать 2 символа" })
+    .max(50, { message: "Длина фамилии не должна превышать 50 символов" }),
+  patronymic: z
+    .string()
+    .min(2, { message: "Длина отчества должна превышать 2 символа" })
+    .max(50, { message: "Длина отчества не должна превышать 50 символов" })
+    .optional()
+    .or(z.literal("")),
+  phone: z.string().regex(/^7\d{10}$/, {
+    message: "Номер телефона должен быть в формате 79999999999",
+  }),
   role: z.enum(["PIZZAMAKER", "MANAGER", "CASHIER"], {
     required_error: "Выберите роль сотрудника",
   }),
@@ -140,12 +164,14 @@ export async function editEmployee(
   const surname = formData.get("surname") as string;
   const patronymic = formData.get("patronymic") as string;
   const phone = formData.get("phone") as string;
+  const role = formData.get("role") as "PIZZAMAKER" | "MANAGER" | "CASHIER";
 
-  const validatedFields = registerEmployeeSchema.safeParse({
+  const validatedFields = editEmployeeSchema.safeParse({
     name,
     surname,
     patronymic,
     phone,
+    role
   });
 
   if (!validatedFields.success) {
@@ -155,6 +181,7 @@ export async function editEmployee(
       surname,
       patronymic,
       phone,
+      role,
       fieldErrors: validatedFields.error.flatten().fieldErrors,
       success: false,
     };
@@ -165,7 +192,7 @@ export async function editEmployee(
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ name, surname, patronymic, phone }),
+    body: JSON.stringify({ name, surname, patronymic, phone, role }),
   });
 
   if (!response.ok) {
@@ -182,6 +209,7 @@ export async function editEmployee(
     surname: surname,
     patronymic: patronymic,
     phone: phone,
+    role: role,
     fieldErrors: undefined,
     error: undefined,
     success: true,

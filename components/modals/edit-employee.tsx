@@ -2,7 +2,7 @@
 
 import {
   editEmployee,
-  ICreateEmployeeActionState
+  ICreateEmployeeActionState,
 } from "@/app/(main)/employees/actions";
 import { useModal } from "@/hooks/use-modal-store";
 import { useActionState, useEffect } from "react";
@@ -10,6 +10,8 @@ import { SubmitButton } from "../submit-button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
 import { FormError } from "../ui/form-error";
 import { Input } from "../ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
+
 
 export const EditEmployeeModal = () => {
   const { isOpen, type, onClose, data } = useModal();
@@ -21,8 +23,9 @@ export const EditEmployeeModal = () => {
     surname: employeeData?.surname ?? "",
     patronymic: employeeData?.patronymic ?? "",
     phone: employeeData?.phone ?? "",
+    role: employeeData?.role ?? "PIZZAMAKER",
     success: false,
-    error: ""
+    error: "",
   };
 
   const [state, formAction] = useActionState(editEmployee, initialState);
@@ -103,6 +106,23 @@ export const EditEmployeeModal = () => {
               defaultValue={employeeData?.phone}
             />
             <FormError message={state?.fieldErrors?.phone?.[0]} />
+          </div>
+
+          <div className="space-y-2">
+            <label htmlFor="role" className="text-zinc-400">
+              Выберите роль
+            </label>
+            <Select name="role" defaultValue={employeeData.role}>
+              <SelectTrigger className="bg-zinc-800 border-zinc-700 text-zinc-100">
+                <SelectValue placeholder="Выберите роль" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="PIZZAMAKER">Пиццамейкер</SelectItem>
+                <SelectItem value="MANAGER">Менеджер</SelectItem>
+                <SelectItem value="CASHIER">Кассир</SelectItem>
+              </SelectContent>
+            </Select>
+            <FormError message={state?.fieldErrors?.role?.[0]} />
           </div>
 
           <input

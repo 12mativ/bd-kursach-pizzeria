@@ -166,7 +166,7 @@ export async function login(state: LoginFormState, formData: FormData) {
       ...state,
       login,
       password,
-      message: "Ошибка при входе",
+      message: "Неверные логин или пароль",
     };
   }
 

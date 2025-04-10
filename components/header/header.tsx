@@ -1,9 +1,10 @@
 "use client";
 
 import { useAuth } from "@/hooks/use-auth";
-import { logout } from "@/app/actions/auth";
+import { logout } from "@/app/auth/actions";
 import { useRouter } from "next/navigation";
 import Link from "next/link"
+import { LogOut } from "lucide-react";
 
 export function Header() {
   const { token, logout: logoutLocal, handleUnauthorized } = useAuth();
@@ -40,9 +41,9 @@ export function Header() {
         {token && (
           <button
             onClick={handleLogout}
-            className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded"
+            className="bg-red-500 hover:bg-red-600 text-white p-2 rounded cursor-pointer transition"
           >
-            Выйти
+            <LogOut />
           </button>
         )}
       </nav>
