@@ -11,20 +11,28 @@ export default async function Page() {
     redirect("/auth");
   }
 
-  var data = await fetchWithAuth(`${process.env.BACKEND_URL}/employees`);
-  var employeesFromServer: IEmployeeInfo[] = await data.json();
+  try {
+    var data = await fetchWithAuth(`${process.env.BACKEND_URL}/employees`);
+    if (data.status === 401) {
+      redirect("/auth");
+    }
+    var employeesFromServer: IEmployeeInfo[] = await data.json();
 
-  return (
-    <div className="container mx-auto py-8 space-y-8">
-      <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold text-zinc-100">Сотрудники</h1>
-        <CreateEmployeeButton />
+    return (
+      <div className="container mx-auto px-4 py-8 space-y-8">
+        <div className="flex justify-between items-center">
+          <h1 className="text-2xl font-bold text-zinc-100">Сотрудники</h1>
+          <CreateEmployeeButton />
+        </div>
+        <div className="flex gap-3 flex-wrap">
+          {employeesFromServer.map((e) => (
+            <EmployeeCard employee={e} key={e.id} />
+          ))}
+        </div>
       </div>
-      <div className="flex gap-3 flex-wrap">
-        {employeesFromServer.map((e) => (
-          <EmployeeCard employee={e} key={e.id} />
-        ))}
-      </div>
-    </div>
-  );
+    );
+  } catch (error) {
+    console.error("Ошибка при загрузке сотрудников:", error);
+    redirect("/auth");
+  }
 }

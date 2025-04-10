@@ -3,7 +3,7 @@
 import { useAuth } from "./use-auth";
 
 export function useFetch() {
-  const { token } = useAuth();
+  const { token, handleUnauthorized } = useAuth();
 
   const fetchWithAuth = async (url: string, options: RequestInit = {}) => {
     const headers = {
@@ -16,6 +16,10 @@ export function useFetch() {
       ...options,
       headers,
     });
+
+    if (response.status === 401) {
+      handleUnauthorized();
+    }
 
     return response;
   };

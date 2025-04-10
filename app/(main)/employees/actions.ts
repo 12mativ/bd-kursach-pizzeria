@@ -6,7 +6,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 
-const createEmployeeSchema = z.object({
+const registerEmployeeSchema = z.object({
   name: z
     .string()
     .min(2, { message: "Длина имени должна превышать 2 символа" })
@@ -24,6 +24,17 @@ const createEmployeeSchema = z.object({
   phone: z.string().regex(/^7\d{10}$/, {
     message: "Номер телефона должен быть в формате 79999999999",
   }),
+  username: z
+    .string()
+    .min(3, { message: "Логин должен содержать минимум 3 символа" })
+    .max(50, { message: "Логин не должен превышать 50 символов" }),
+  password: z
+    .string()
+    .min(6, { message: "Пароль должен содержать минимум 6 символов" })
+    .max(50, { message: "Пароль не должен превышать 50 символов" }),
+  role: z.enum(["PIZZAMAKER", "MANAGER", "CASHIER"], {
+    required_error: "Выберите роль сотрудника",
+  }),
 });
 
 export interface ICreateEmployeeActionState {
@@ -32,17 +43,23 @@ export interface ICreateEmployeeActionState {
   surname?: string;
   patronymic?: string;
   phone?: string;
+  username?: string;
+  password?: string;
+  role?: "PIZZAMAKER" | "MANAGER" | "CASHIER";
   fieldErrors?: {
     name?: string[];
     surname?: string[];
     patronymic?: string[];
     phone?: string[];
+    username?: string[];
+    password?: string[];
+    role?: string[];
   };
   error?: string;
   success?: boolean;
 }
 
-export async function createEmployee(
+export async function registerEmployee(
   prevState: ICreateEmployeeActionState,
   formData: FormData
 ): Promise<ICreateEmployeeActionState> {
@@ -56,12 +73,18 @@ export async function createEmployee(
   const surname = formData.get("surname") as string;
   const patronymic = formData.get("patronymic") as string;
   const phone = formData.get("phone") as string;
+  const username = formData.get("username") as string;
+  const password = formData.get("password") as string;
+  const role = formData.get("role") as "PIZZAMAKER" | "MANAGER" | "CASHIER";
 
-  const validatedFields = createEmployeeSchema.safeParse({
+  const validatedFields = registerEmployeeSchema.safeParse({
     name,
     surname,
     patronymic,
     phone,
+    username,
+    password,
+    role,
   });
 
   if (!validatedFields.success) {
@@ -71,22 +94,25 @@ export async function createEmployee(
       surname,
       patronymic,
       phone,
+      username,
+      password,
+      role,
       fieldErrors: validatedFields.error.flatten().fieldErrors,
     };
   }
 
-  const response = await fetchWithAuth(`${process.env.BACKEND_URL}/employees`, {
+  const response = await fetchWithAuth(`${process.env.BACKEND_URL}/auth/register/employee`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ name, surname, patronymic, phone }),
+    body: JSON.stringify({ name, surname, patronymic, phone, username, password, role }),
   });
 
   if (!response.ok) {
     return {
       ...prevState,
-      error: "Ошибка при создании сотрудника",
+      error: "Ошибка при регистрации сотрудника",
     };
   }
 
@@ -96,6 +122,9 @@ export async function createEmployee(
     surname: "",
     patronymic: "",
     phone: "",
+    username: "",
+    password: "",
+    role: "PIZZAMAKER",
     fieldErrors: undefined,
     error: undefined,
     success: true,
@@ -112,7 +141,7 @@ export async function editEmployee(
   const patronymic = formData.get("patronymic") as string;
   const phone = formData.get("phone") as string;
 
-  const validatedFields = createEmployeeSchema.safeParse({
+  const validatedFields = registerEmployeeSchema.safeParse({
     name,
     surname,
     patronymic,

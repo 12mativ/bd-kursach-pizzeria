@@ -6,21 +6,20 @@ import { useRouter } from "next/navigation";
 import Link from "next/link"
 
 export function Header() {
-  const { token, logout: logoutLocal } = useAuth();
+  const { token, logout: logoutLocal, handleUnauthorized } = useAuth();
   const router = useRouter();
   
   const handleLogout = async () => {
     try {
       const result = await logout();
       if (result?.status === 401) {
-        logoutLocal();
-        router.push("/auth");
+        handleUnauthorized();
         return;
       }
       logoutLocal();
       router.push("/auth");
     } catch (error) {
-      console.error("Ошибка при выходе:", error);
+      console.error("Ошибка при выходе из аккаунта:", error);
     }
   };
 

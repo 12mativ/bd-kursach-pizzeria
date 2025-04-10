@@ -9,6 +9,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { verifySession } from "@/lib/dal";
 import { useEffect } from "react";
+import { useAuth } from "../../hooks/use-auth";
 
 const initialState: FormState = {
   name: "",
@@ -24,23 +25,21 @@ const initialState: FormState = {
 
 export default function AuthPage() {
   const [state, formAction] = useActionState(signup, initialState);
+  const { saveToken, token } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
-    const checkAuth = async () => {
-      const { isAuth } = await verifySession();
-      if (isAuth) {
-        router.push("/");
-      }
-    };
-    checkAuth();
-  }, [router]);
+    if (token) {
+      router.push("/");
+    }
+  }, [token, router]);
 
   useEffect(() => {
     if (state?.access_token) {
+      saveToken(state.access_token);
       router.push("/");
     }
-  }, [state, router]);
+  }, [state, saveToken, router]);
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-zinc-900">

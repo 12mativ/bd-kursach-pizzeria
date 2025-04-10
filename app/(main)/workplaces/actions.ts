@@ -4,6 +4,7 @@ import { verifySession } from "@/lib/dal";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
+import { fetchWithAuth } from "@/utils/fetch";
 
 const createWorkplaceSchema = z.object({
   name: z
@@ -54,7 +55,7 @@ export async function createWorkplace(
     };
   }
 
-  const response = await fetch(`${process.env.BACKEND_URL}/workplaces`, {
+  const response = await fetchWithAuth(`${process.env.BACKEND_URL}/workplaces`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -98,12 +99,11 @@ export async function editWorkplace(
       name,
       status,
       fieldErrors: validatedFields.error.flatten().fieldErrors,
-      success: false,
     };
   }
 
-  const response = await fetch(`${process.env.BACKEND_URL}/workplaces/${id}`, {
-    method: "PATCH",
+  const response = await fetchWithAuth(`${process.env.BACKEND_URL}/workplaces/${id}`, {
+    method: "PUT",
     headers: {
       "Content-Type": "application/json",
     },
@@ -113,15 +113,14 @@ export async function editWorkplace(
   if (!response.ok) {
     return {
       ...prevState,
-      error: "Ошибка при обновлении рабочего места",
-      success: false,
+      error: "Ошибка при редактировании рабочего места",
     };
   }
 
   revalidatePath("/workplaces");
   return {
-    name,
-    status,
+    name: "",
+    status: "free",
     fieldErrors: undefined,
     error: undefined,
     success: true,
@@ -134,20 +133,18 @@ export async function deleteWorkplace(
 ) {
   const id = formData.get("id");
 
-  const response = await fetch(`${process.env.BACKEND_URL}/workplaces/${id}`, {
+  const response = await fetchWithAuth(`${process.env.BACKEND_URL}/workplaces/${id}`, {
     method: "DELETE",
   });
 
   if (!response.ok) {
     return {
       error: "Ошибка при удалении рабочего места",
-      success: false,
     };
   }
 
   revalidatePath("/workplaces");
   return {
-    error: "",
-    success: true,
+    error: undefined,
   };
 } 

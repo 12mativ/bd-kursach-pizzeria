@@ -1,9 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter, usePathname } from "next/navigation";
 
 export function useAuth() {
   const [token, setToken] = useState<string | null>(null);
+  const router = useRouter();
+  const pathname = usePathname();
 
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
@@ -26,5 +29,12 @@ export function useAuth() {
     setToken(null);
   };
 
-  return { token, saveToken, logout };
+  const handleUnauthorized = () => {
+    logout();
+    if (pathname !== "/auth") {
+      router.push("/auth");
+    }
+  };
+
+  return { token, saveToken, logout, handleUnauthorized };
 } 
