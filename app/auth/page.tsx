@@ -6,9 +6,9 @@ import { Input } from "@/components/ui/input";
 import { SubmitButton } from "@/components/submit-button";
 import { FormError } from "@/components/ui/form-error";
 import Link from "next/link";
-import { useAuth } from "@/hooks/use-auth";
-import { useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { verifySession } from "@/lib/dal";
+import { useEffect } from "react";
 
 const initialState: FormState = {
   name: "",
@@ -24,21 +24,23 @@ const initialState: FormState = {
 
 export default function AuthPage() {
   const [state, formAction] = useActionState(signup, initialState);
-  const { saveToken, token } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
-    if (token) {
-      router.push("/");
-    }
-  }, [token, router]);
+    const checkAuth = async () => {
+      const { isAuth } = await verifySession();
+      if (isAuth) {
+        router.push("/");
+      }
+    };
+    checkAuth();
+  }, [router]);
 
   useEffect(() => {
     if (state?.access_token) {
-      saveToken(state.access_token);
       router.push("/");
     }
-  }, [state, saveToken, router]);
+  }, [state, router]);
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-zinc-900">

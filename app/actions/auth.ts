@@ -2,6 +2,8 @@
 
 import { redirect } from "next/navigation";
 import { z } from "zod";
+import { useFetch } from "@/hooks/use-fetch";
+import { fetchWithAuth } from "@/utils/fetch";
 
 const SignupFormSchema = z.object({
   name: z
@@ -175,4 +177,18 @@ export async function login(state: LoginFormState, formData: FormData) {
     password,
     access_token: data.access_token 
   };
+}
+
+export async function logout() {
+  const response = await fetchWithAuth(`${process.env.BACKEND_URL}/auth/logout`, {
+    method: "POST",
+  });
+
+  if (response.status === 401) {
+    return { status: 401 };
+  }
+
+  if (!response.ok) {
+    throw new Error("Ошибка при выходе из аккаунта");
+  }
 }

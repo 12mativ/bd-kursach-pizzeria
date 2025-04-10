@@ -9,18 +9,22 @@ export function useAuth() {
     const storedToken = localStorage.getItem("token");
     if (storedToken) {
       setToken(storedToken);
+      // Сохраняем токен в cookies для серверных запросов
+      document.cookie = `token=${storedToken}; path=/`;
     }
   }, []);
 
   const saveToken = (newToken: string) => {
     localStorage.setItem("token", newToken);
+    document.cookie = `token=${newToken}; path=/`;
     setToken(newToken);
   };
 
-  const removeToken = () => {
+  const logout = () => {
     localStorage.removeItem("token");
+    document.cookie = "token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
     setToken(null);
   };
 
-  return { token, saveToken, removeToken };
+  return { token, saveToken, logout };
 } 

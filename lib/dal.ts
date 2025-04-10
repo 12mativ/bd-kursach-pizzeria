@@ -1,21 +1,16 @@
-import "server-only";
+"use server";
 
-import { redirect } from "next/navigation";
 import { cache } from "react";
+import { fetchWithAuth } from "@/utils/fetch";
 
 export const verifySession = cache(async () => {
-  const response = await fetch(
+  const response = await fetchWithAuth(
     `${process.env.BACKEND_URL}/auth/check-session`,
-    {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    }
+    { method: "GET" }
   );
-
+  
   if (!response?.ok) {
-    redirect("/auth");
+    return { isAuth: false };
   }
 
   const data = await response.json();

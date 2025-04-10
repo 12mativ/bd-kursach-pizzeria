@@ -2,15 +2,16 @@ import { EmployeeCard, IEmployeeInfo } from "@/components/employee-card/employee
 import { CreateEmployeeButton } from "./create-employee-button";
 import { verifySession } from "@/lib/dal";
 import { redirect } from "next/navigation";
+import { fetchWithAuth } from "@/utils/fetch";
 
 export default async function Page() {
   const { isAuth } = await verifySession();
-
+  
   if (!isAuth) {
     redirect("/auth");
   }
 
-  var data = await fetch(`${process.env.BACKEND_URL}/employees`);
+  var data = await fetchWithAuth(`${process.env.BACKEND_URL}/employees`);
   var employeesFromServer: IEmployeeInfo[] = await data.json();
 
   return (

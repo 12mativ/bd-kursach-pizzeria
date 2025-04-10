@@ -7,9 +7,9 @@ export function useFetch() {
 
   const fetchWithAuth = async (url: string, options: RequestInit = {}) => {
     const headers = {
-      ...options.headers,
       "Content-Type": "application/json",
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      ...options.headers,
     };
 
     const response = await fetch(url, {

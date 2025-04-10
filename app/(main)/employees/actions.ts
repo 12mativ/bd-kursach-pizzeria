@@ -1,6 +1,7 @@
 "use server";
 
 import { verifySession } from "@/lib/dal";
+import { fetchWithAuth } from "@/utils/fetch";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
@@ -74,7 +75,7 @@ export async function createEmployee(
     };
   }
 
-  const response = await fetch(`${process.env.BACKEND_URL}/employees`, {
+  const response = await fetchWithAuth(`${process.env.BACKEND_URL}/employees`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -130,7 +131,7 @@ export async function editEmployee(
     };
   }
 
-  const response = await fetch(`${process.env.BACKEND_URL}/employees/${id}`, {
+  const response = await fetchWithAuth(`${process.env.BACKEND_URL}/employees/${id}`, {
     method: "PATCH",
     headers: {
       "Content-Type": "application/json",
@@ -164,7 +165,7 @@ export async function deleteEmployee(
 ) {
   const id = formData.get("id");
 
-  const response = await fetch(`${process.env.BACKEND_URL}/employees/${id}`, {
+  const response = await fetchWithAuth(`${process.env.BACKEND_URL}/employees/${id}`, {
     method: "DELETE",
   });
 
