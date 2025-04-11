@@ -2,9 +2,14 @@
 
 import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
+import { jwtDecode } from "jwt-decode";
 
 export function useAuth() {
   const [token, setToken] = useState<string | null>(null);
+  const [userInfo, setUserInfo] = useState<{
+    username: string;
+    role: "ADMIN" | "PIZZAMAKER" | "MANAGER" | "CASHIER";
+  } | null>(null);
   const router = useRouter();
   const pathname = usePathname();
 
@@ -16,6 +21,12 @@ export function useAuth() {
       document.cookie = `token=${storedToken}; path=/`;
     }
   }, []);
+
+  useEffect(() => {
+    if (token) {
+      setUserInfo(jwtDecode(token));
+    }
+  }, [token]);
 
   const saveToken = (newToken: string) => {
     localStorage.setItem("token", newToken);
@@ -36,5 +47,5 @@ export function useAuth() {
     }
   };
 
-  return { token, saveToken, logout, handleUnauthorized };
-} 
+  return { token, userInfo, saveToken, logout, handleUnauthorized };
+}
