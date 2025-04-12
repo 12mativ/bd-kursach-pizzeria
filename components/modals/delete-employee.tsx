@@ -1,17 +1,14 @@
 "use client";
 
 import {
-  createEmployee,
-  deleteEmployee,
-  ICreateEmployeeActionState,
+  deleteEmployee
 } from "@/app/(main)/employees/actions";
-import { useActionState, useEffect } from "react";
-import { Input } from "../ui/input";
-import { SubmitButton } from "../submit-button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
 import { useModal } from "@/hooks/use-modal-store";
-import { FormError } from "../ui/form-error";
+import { useActionState, useEffect } from "react";
+import { SubmitButton } from "../submit-button";
 import { Button } from "../ui/button";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
+import { FormError } from "../ui/form-error";
 
 export const DeleteEmployeeModal = () => {
   const { isOpen, type, onClose, data } = useModal();

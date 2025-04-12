@@ -6,20 +6,16 @@ import { redirect } from "next/navigation";
 import { z } from "zod";
 import { fetchWithAuth } from "@/utils/fetch";
 
-const createWorkplaceSchema = z.object({
-  name: z
-    .string()
-    .min(2, { message: "Длина названия должна превышать 2 символа" })
-    .max(50, { message: "Длина названия не должна превышать 50 символов" }),
+const WorkplaceSchema = z.object({
+  name: z.string().min(1, "Название обязательно"),
   status: z.enum(["free", "occupied", "partly occupied"], {
-    required_error: "Выберите статус рабочего места",
+    required_error: "Статус обязателен",
   }),
 });
 
 export interface ICreateWorkplaceActionState {
-  id?: number;
   name?: string;
-  status?: "free" | "occupied" | "partly occupied";
+  status?: string;
   fieldErrors?: {
     name?: string[];
     status?: string[];
@@ -29,122 +25,127 @@ export interface ICreateWorkplaceActionState {
 }
 
 export async function createWorkplace(
-  prevState: ICreateWorkplaceActionState,
+  state: ICreateWorkplaceActionState,
   formData: FormData
 ): Promise<ICreateWorkplaceActionState> {
-  const { isAuth } = await verifySession();
-
-  if (!isAuth) {
-    redirect("/auth");
-  }
-
-  const name = formData.get("name") as string;
-  const status = formData.get("status") as "free" | "occupied" | "partly occupied";
-
-  const validatedFields = createWorkplaceSchema.safeParse({
-    name,
-    status,
+  const validatedFields = WorkplaceSchema.safeParse({
+    name: formData.get("name"),
+    status: formData.get("status"),
   });
 
   if (!validatedFields.success) {
     return {
-      ...prevState,
-      name,
-      status,
       fieldErrors: validatedFields.error.flatten().fieldErrors,
+      error: "Неверные данные. Не удалось создать рабочее место.",
+      success: false,
     };
   }
 
-  const response = await fetchWithAuth(`${process.env.BACKEND_URL}/workplaces`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ name, status }),
-  });
+  const response = await fetchWithAuth(
+    `${process.env.BACKEND_URL}/workplaces`,
+    {
+      method: "POST",
+      body: JSON.stringify(validatedFields.data),
+    }
+  );
 
   if (!response.ok) {
     return {
-      ...prevState,
+      fieldErrors: {},
       error: "Ошибка при создании рабочего места",
+      success: false,
     };
   }
 
   revalidatePath("/workplaces");
+
   return {
-    name: "",
-    status: "free",
-    fieldErrors: undefined,
-    error: undefined,
+    fieldErrors: {},
+    error: "Рабочее место успешно создано",
     success: true,
   };
 }
 
 export async function editWorkplace(
-  prevState: ICreateWorkplaceActionState,
+  state: ICreateWorkplaceActionState,
   formData: FormData
 ): Promise<ICreateWorkplaceActionState> {
-  const id = formData.get("id");
-  const name = formData.get("name") as string;
-  const status = formData.get("status") as "free" | "occupied" | "partly occupied";
-
-  const validatedFields = createWorkplaceSchema.safeParse({
-    name,
-    status,
+  const validatedFields = WorkplaceSchema.safeParse({
+    name: formData.get("name"),
+    status: formData.get("status"),
   });
 
   if (!validatedFields.success) {
     return {
-      ...prevState,
-      name,
-      status,
       fieldErrors: validatedFields.error.flatten().fieldErrors,
+      error: "Неверные данные. Не удалось обновить рабочее место.",
     };
   }
 
-  const response = await fetchWithAuth(`${process.env.BACKEND_URL}/workplaces/${id}`, {
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ name, status }),
-  });
+  const response = await fetchWithAuth(
+    `${process.env.BACKEND_URL}/workplaces/${formData.get("id")}`,
+    {
+      method: "PATCH",
+      body: JSON.stringify(validatedFields.data),
+    }
+  );
 
   if (!response.ok) {
     return {
-      ...prevState,
-      error: "Ошибка при редактировании рабочего места",
+      fieldErrors: {},
+      error: "Ошибка при обновлении рабочего места",
     };
   }
 
   revalidatePath("/workplaces");
+
   return {
-    name: "",
-    status: "free",
-    fieldErrors: undefined,
-    error: undefined,
+    fieldErrors: {},
+    error: "",
     success: true,
   };
 }
 
 export async function deleteWorkplace(
-  prevState: { error: string },
+  state: ICreateWorkplaceActionState,
   formData: FormData
-) {
-  const id = formData.get("id");
-
-  const response = await fetchWithAuth(`${process.env.BACKEND_URL}/workplaces/${id}`, {
-    method: "DELETE",
-  });
+): Promise<ICreateWorkplaceActionState> {
+  const response = await fetchWithAuth(
+    `${process.env.BACKEND_URL}/workplaces/${formData.get("id")}`,
+    {
+      method: "DELETE",
+    }
+  );
 
   if (!response.ok) {
-    return {
-      error: "Ошибка при удалении рабочего места",
-    };
+    return { error: "Ошибка при удалении рабочего места" };
   }
 
   revalidatePath("/workplaces");
-  return {
-    error: undefined,
-  };
-} 
+
+  return { error: "", success: true };
+}
+
+export async function addEmployeeToWorkplace(
+  state: ICreateWorkplaceActionState,
+  formData: FormData
+): Promise<ICreateWorkplaceActionState> {
+  const workplaceId = formData.get("workplaceId") as string;
+  const employeeIds = formData.getAll("employeeIds").map((id) => +id);
+
+  const response = await fetchWithAuth(
+    `${process.env.BACKEND_URL}/workplaces/${workplaceId}/employees`,
+    {
+      method: "PATCH",
+      body: JSON.stringify({ employeeIds }),
+    }
+  );
+
+  if (!response.ok) {
+    return { error: "Ошибка при добавлении сотрудников" };
+  }
+
+  revalidatePath("/workplaces");
+
+  return { error: "", success: true };
+}

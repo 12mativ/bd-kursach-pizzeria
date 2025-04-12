@@ -1,11 +1,6 @@
 import { create } from "zustand";
 import { IEmployeeInfo } from "../components/employee-card/employee-card";
-
-export interface IWorkplaceInfo {
-  id: string;
-  name: string;
-  status: "free" | "occupied" | "partly occupied";
-}
+import { IWorkplaceInfo } from "@/components/workplace-card/workplace-card";
 
 export type ModalType =
   | "createEmployee"
@@ -13,11 +8,15 @@ export type ModalType =
   | "createWorkplace"
   | "editWorkplace"
   | "deleteEmployee"
-  | "deleteWorkplace" ;
+  | "deleteWorkplace"
+  | "addEmployeeToWorkplace";
 
 export interface ModalData {
   employeeData?: IEmployeeInfo,
-  workplaceData?: IWorkplaceInfo
+  workplaceData?: IWorkplaceInfo,
+  workplaceId?: number;
+  employees?: IEmployeeInfo[];
+  assignedEmployeesData?: IEmployeeInfo[];
 }
 
 interface ModalStore {

@@ -23,10 +23,12 @@ export default async function WorkplacesPage() {
     }
   }
 
-  const response = await fetchWithAuth(`${process.env.BACKEND_URL}/workplaces`);
-  const workplaces = await response.json();
+  const workplacesResponse = await fetchWithAuth(`${process.env.BACKEND_URL}/workplaces`);
+  const workplaces = await workplacesResponse.json();
+  const allEmployeesResponse = await fetchWithAuth(`${process.env.BACKEND_URL}/employees`);
+  const allEmployees = await allEmployeesResponse.json();
 
-  if (!response.ok) {
+  if (!workplacesResponse.ok || !allEmployeesResponse.ok) {
     return (
       <div className="container mx-auto px-4 py-8 space-y-8">
         <p className="text-red-500">Произошла ошибка при загрузке рабочих мест</p>
@@ -43,7 +45,7 @@ export default async function WorkplacesPage() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {workplaces.map((workplace: any) => (
-          <WorkplaceCard key={workplace.id} workplace={workplace} />
+          <WorkplaceCard key={workplace.id} workplace={workplace} employees={allEmployees} />
         ))}
       </div>
     </div>

@@ -9,8 +9,8 @@ export default async function Home() {
   }
 
   return (
-    <div>
-      
+    <div className="container mx-auto px-4 py-8 space-y-8">
+      <h1 className="text-2xl font-bold text-zinc-100">Добро пожаловать в <span className="text-indigo-500">систему управления пиццерией</span></h1>
     </div>
   );
 }

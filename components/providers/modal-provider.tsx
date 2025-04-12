@@ -7,6 +7,7 @@ import { DeleteEmployeeModal } from "../modals/delete-employee";
 import { EditWorkplaceModal } from "../modals/edit-workplace";
 import { CreateWorkplaceModal } from "../modals/create-workplace";
 import { DeleteWorkplaceModal } from "../modals/delete-workplace";
+import { AddEmployeeToWorkplaceModal } from "../modals/add-employee-to-workplace";
 
 export function ModalProvider() {
   const [isMounted, setIsMounted] = useState(false);
@@ -27,6 +28,7 @@ export function ModalProvider() {
       <CreateWorkplaceModal />
       <EditWorkplaceModal />
       <DeleteWorkplaceModal />
+      <AddEmployeeToWorkplaceModal />
     </>
   );
 }

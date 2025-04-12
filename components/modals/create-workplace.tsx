@@ -1,13 +1,12 @@
 "use client";
 
 import { createWorkplace, ICreateWorkplaceActionState } from "@/app/(main)/workplaces/actions";
-import { useActionState } from "react";
-import { Input } from "../ui/input";
+import { useModal } from "@/hooks/use-modal-store";
+import { useActionState, useEffect } from "react";
 import { SubmitButton } from "../submit-button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
-import { useModal } from "@/hooks/use-modal-store";
-import { useRef } from "react";
 import { FormError } from "../ui/form-error";
+import { Input } from "../ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 
 const initialState: ICreateWorkplaceActionState = {
@@ -16,26 +15,27 @@ const initialState: ICreateWorkplaceActionState = {
 };
 
 export const CreateWorkplaceModal = () => {
-  const [state, formAction] = useActionState(createWorkplace, initialState);
   const { isOpen, type, onClose } = useModal();
-  const formRef = useRef<HTMLFormElement>(null);
+
+  const [state, formAction] = useActionState(createWorkplace, initialState);
 
   const isModalOpen = isOpen && type === "createWorkplace";
 
-  const handleCreateEntityClassClose = () => {
-    formRef.current?.reset();
-    onClose();
-  };
+  useEffect(() => {
+    if (state?.success) {
+      onClose();
+    }
+  }, [state, onClose]);
 
   return (
-    <Dialog open={isModalOpen} onOpenChange={handleCreateEntityClassClose}>
+    <Dialog open={isModalOpen} onOpenChange={onClose}>
       <DialogContent className="bg-zinc-900 border-zinc-800">
         <DialogHeader>
           <DialogTitle className="text-zinc-100">
             Создать новое рабочее место
           </DialogTitle>
         </DialogHeader>
-        <form ref={formRef} action={formAction} className="space-y-4">
+        <form action={formAction} className="space-y-4">
           <div className="space-y-2">
             <label htmlFor="name" className="text-zinc-400">
               Введите название
@@ -68,6 +68,9 @@ export const CreateWorkplaceModal = () => {
           </div>
 
           <SubmitButton text="Создать" />
+
+          <FormError message={state?.error} />
+          
         </form>
       </DialogContent>
     </Dialog>

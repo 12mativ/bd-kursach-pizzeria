@@ -1,26 +1,35 @@
 "use client";
 
-import { registerEmployee, ICreateEmployeeActionState } from "@/app/(main)/employees/actions";
+import {
+  registerEmployee,
+  ICreateEmployeeActionState,
+} from "@/app/(main)/employees/actions";
 import { useActionState, useEffect } from "react";
 import { Input } from "../ui/input";
 import { SubmitButton } from "../submit-button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
 import { useModal } from "@/hooks/use-modal-store";
 import { FormError } from "../ui/form-error";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
+
+const initialState: ICreateEmployeeActionState = {
+  name: "",
+  surname: "",
+  patronymic: "",
+  phone: "",
+  username: "",
+  password: "",
+  role: "PIZZAMAKER",
+};
 
 export const CreateEmployeeModal = () => {
   const { isOpen, type, onClose } = useModal();
-
-  const initialState: ICreateEmployeeActionState = {
-    name: "",
-    surname: "",
-    patronymic: "",
-    phone: "",
-    username: "",
-    password: "",
-    role: "PIZZAMAKER",
-  };
 
   const [state, formAction] = useActionState(registerEmployee, initialState);
 
@@ -148,6 +157,8 @@ export const CreateEmployeeModal = () => {
           </div>
 
           <SubmitButton text="Зарегистрировать" />
+
+          <FormError message={state?.error} />
 
           <p aria-live="polite" className="sr-only" role="status">
             {state?.fieldErrors?.name?.[0]}

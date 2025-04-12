@@ -21,7 +21,17 @@ export const EmployeeCard = ({ employee }: { employee: IEmployeeInfo }) => {
         <p className="text-sm text-neutral-400">Номер телефона</p>
         <p>{employee.phone}</p>
       </div>
-      <p className={cn(employee.role === "MANAGER" ? "text-green-500" : employee.role === "PIZZAMAKER" ? "text-amber-500" : "text-fuchsia-400")}>{formatRole(employee.role)}</p>
+      <p
+        className={cn(
+          employee.role === "MANAGER"
+            ? "text-green-500"
+            : employee.role === "PIZZAMAKER"
+            ? "text-amber-500"
+            : "text-fuchsia-400"
+        )}
+      >
+        {formatRole(employee.role)}
+      </p>
       <div className="flex items-center gap-x-2 mt-2">
         <EditButton employee={employee} />
         <DeleteButton employee={employee} />

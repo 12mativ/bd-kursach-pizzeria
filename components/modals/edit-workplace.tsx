@@ -22,10 +22,6 @@ export const EditWorkplaceModal = () => {
 
   const isModalOpen = isOpen && type === "editWorkplace";
 
-  const handleEditEntityClassClose = () => {
-    onClose();
-  };
-
   useEffect(() => {
     if (state?.success) {
       onClose();
@@ -33,7 +29,7 @@ export const EditWorkplaceModal = () => {
   }, [state, onClose]);
 
   return (
-    <Dialog open={isModalOpen} onOpenChange={handleEditEntityClassClose}>
+    <Dialog open={isModalOpen} onOpenChange={onClose}>
       <DialogContent className="bg-zinc-900 border-zinc-800">
         <DialogHeader>
           <DialogTitle className="text-zinc-100">
@@ -75,6 +71,9 @@ export const EditWorkplaceModal = () => {
           </div>
 
           <SubmitButton text="Сохранить" />
+
+          <FormError message={state?.error} />
+
         </form>
       </DialogContent>
     </Dialog>
