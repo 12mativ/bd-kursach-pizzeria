@@ -25,14 +25,12 @@ const initialState: ICreateEmployeeActionState = {
   phone: "",
   username: "",
   password: "",
-  role: "PIZZAMAKER",
+  role: undefined,
 };
 
 export const CreateEmployeeModal = () => {
   const { isOpen, type, onClose } = useModal();
-
   const [state, formAction] = useActionState(registerEmployee, initialState);
-
   const isModalOpen = isOpen && type === "createEmployee";
 
   useEffect(() => {
@@ -143,7 +141,7 @@ export const CreateEmployeeModal = () => {
             <label htmlFor="role" className="text-zinc-400">
               Выберите роль
             </label>
-            <Select name="role" defaultValue="PIZZAMAKER">
+            <Select name="role">
               <SelectTrigger className="bg-zinc-800 border-zinc-700 text-zinc-100">
                 <SelectValue placeholder="Выберите роль" />
               </SelectTrigger>

@@ -5,6 +5,7 @@ import { logout } from "@/app/auth/actions";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { LogOut } from "lucide-react";
+import { formatRole } from "@/lib/utils";
 
 export function Header() {
   const {
@@ -36,12 +37,28 @@ export function Header() {
       href: "/",
       roles: ["ADMIN", "MANAGER", "PIZZAMAKER", "CASHIER"],
     },
-    { id: 2, name: "Сотрудники", href: "/employees", roles: ["ADMIN", "MANAGER"] },
-    { id: 3, name: "Рабочие места", href: "/workplaces", roles: ["ADMIN", "MANAGER"] },
+    {
+      id: 2,
+      name: "Сотрудники",
+      href: "/employees",
+      roles: ["ADMIN", "MANAGER"],
+    },
+    {
+      id: 3,
+      name: "Рабочие места",
+      href: "/workplaces",
+      roles: ["ADMIN", "MANAGER", "PIZZAMAKER", "CASHIER"],
+    },
+    {
+      id: 4,
+      name: "Пицца",
+      href: "/pizza",
+      roles: ["ADMIN", "MANAGER", "PIZZAMAKER", "CASHIER"],
+    },
   ];
 
   return (
-    <div className="p-3 bg-neutral-800">
+    <div className="fixed top-0 left-0 right-0 p-3 bg-neutral-800 z-50">
       <nav className="flex items-center justify-between">
         <div className="flex gap-x-3">
           {menuItems.map(
@@ -59,12 +76,22 @@ export function Header() {
           )}
         </div>
         {token && (
-          <button
-            onClick={handleLogout}
-            className="bg-red-500 hover:bg-red-600 text-white p-2 rounded cursor-pointer transition"
-          >
-            <LogOut />
-          </button>
+          <div className="flex items-center gap-x-4">
+            <div className="flex flex-col">
+              <p className="text-white">{userInfo?.username}</p>
+              <p className="text-indigo-400 text-sm">
+                {formatRole(
+                  userInfo?.role as "MANAGER" | "PIZZAMAKER" | "CASHIER"
+                )}
+              </p>
+            </div>
+            <button
+              onClick={handleLogout}
+              className="bg-red-500 hover:bg-red-600 text-white p-2 rounded cursor-pointer transition"
+            >
+              <LogOut />
+            </button>
+          </div>
         )}
       </nav>
     </div>

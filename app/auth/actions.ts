@@ -1,9 +1,7 @@
 "use server";
 
-import { redirect } from "next/navigation";
+import { fetchWithAuth } from "@/lib/server-utils/fetch-with-auth";
 import { z } from "zod";
-import { useFetch } from "@/hooks/use-fetch";
-import { fetchWithAuth } from "@/utils/fetch";
 
 const SignupFormSchema = z.object({
   name: z

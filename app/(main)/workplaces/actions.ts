@@ -1,10 +1,8 @@
 "use server";
 
-import { verifySession } from "@/lib/dal";
 import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
 import { z } from "zod";
-import { fetchWithAuth } from "@/utils/fetch";
+import { fetchWithAuth } from "@/lib/server-utils/fetch-with-auth";
 
 const WorkplaceSchema = z.object({
   name: z.string().min(1, "Название обязательно"),

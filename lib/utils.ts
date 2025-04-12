@@ -19,9 +19,25 @@ export function formatRole(role: "PIZZAMAKER" | "MANAGER" | "CASHIER") {
       result = "Касссир";
       break;
     default:
-      result = "Пиццамейкер";
+      result = "Суперпользователь";
       break;
   }
 
   return result;
+}
+
+export function isAdmin(userInfo: any) {
+  return userInfo.role === "ADMIN";
+}
+
+export function isManager(userInfo: any) {
+  return userInfo.role === "MANAGER";
+}
+
+export function isPizzamaker(userInfo: any) {
+  return userInfo.role === "PIZZAMAKER";
+}
+
+export function isCashier(userInfo: any) {
+  return userInfo.role === "CASHIER";
 }

@@ -1,6 +1,8 @@
-import { cn, formatRole } from "@/lib/utils";
+import { cn, formatRole, isAdmin } from "@/lib/utils";
 import { DeleteButton } from "./delete-button";
 import { EditButton } from "./edit-button";
+import { jwtDecode } from "jwt-decode";
+import { cookies } from "next/headers";
 
 export interface IEmployeeInfo {
   id: number;
@@ -11,7 +13,16 @@ export interface IEmployeeInfo {
   role: "PIZZAMAKER" | "MANAGER" | "CASHIER";
 }
 
-export const EmployeeCard = ({ employee }: { employee: IEmployeeInfo }) => {
+export const EmployeeCard = async ({ employee }: { employee: IEmployeeInfo }) => {
+  const cookieStore = await cookies();
+  const token = cookieStore.get("token")?.value;
+
+  var userInfo;
+
+  if (token) {
+    userInfo = jwtDecode(token);
+  }
+
   return (
     <div className="flex flex-col gap-y-2 border border-neutral-700 p-2 rounded w-[300px] bg-neutral-800">
       <p className="text-indigo-400">
@@ -33,8 +44,8 @@ export const EmployeeCard = ({ employee }: { employee: IEmployeeInfo }) => {
         {formatRole(employee.role)}
       </p>
       <div className="flex items-center gap-x-2 mt-2">
-        <EditButton employee={employee} />
-        <DeleteButton employee={employee} />
+        {isAdmin(userInfo) && <EditButton employee={employee} />}
+        {isAdmin(userInfo) && <DeleteButton employee={employee} />}
       </div>
     </div>
   );

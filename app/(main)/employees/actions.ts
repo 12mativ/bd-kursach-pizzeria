@@ -1,11 +1,10 @@
 "use server";
 
 import { verifySession } from "@/lib/dal";
-import { fetchWithAuth } from "@/utils/fetch";
-import { debug } from "console";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
+import { fetchWithAuth } from "@/lib/server-utils/fetch-with-auth";
 
 const registerEmployeeSchema = z.object({
   name: z
@@ -34,7 +33,7 @@ const registerEmployeeSchema = z.object({
     .min(6, { message: "Пароль должен содержать минимум 6 символов" })
     .max(50, { message: "Пароль не должен превышать 50 символов" }),
   role: z.enum(["PIZZAMAKER", "MANAGER", "CASHIER"], {
-    required_error: "Выберите роль сотрудника",
+    message: "Выберите роль сотрудника",
   }),
 });
 
@@ -57,7 +56,7 @@ const editEmployeeSchema = z.object({
     message: "Номер телефона должен быть в формате 79999999999",
   }),
   role: z.enum(["PIZZAMAKER", "MANAGER", "CASHIER"], {
-    required_error: "Выберите роль сотрудника",
+    message: "Выберите роль сотрудника",
   }),
 });
 
@@ -122,6 +121,7 @@ export async function registerEmployee(
       password,
       role,
       fieldErrors: validatedFields.error.flatten().fieldErrors,
+      success: false,
     };
   }
 
@@ -137,6 +137,7 @@ export async function registerEmployee(
     return {
       ...prevState,
       error: "Ошибка при регистрации сотрудника",
+      success: false,
     };
   }
 

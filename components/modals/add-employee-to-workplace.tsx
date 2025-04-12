@@ -51,7 +51,7 @@ export function AddEmployeeToWorkplaceModal() {
           <DialogTitle>Добавить сотрудников</DialogTitle>
         </DialogHeader>
         <form action={handleSubmit} className="space-y-4">
-          <div className="space-y-2">
+          <div className="space-y-2 max-h-96 overflow-y-auto">
             {data.employees?.map((employee) => (
               <div key={employee.id} className="flex items-center space-x-2">
                 <Checkbox

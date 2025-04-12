@@ -1,7 +1,7 @@
 "use server";
 
 import { cache } from "react";
-import { fetchWithAuth } from "@/utils/fetch";
+import { fetchWithAuth } from "./server-utils/fetch-with-auth";
 
 export const verifySession = cache(async () => {
   const response = await fetchWithAuth(
@@ -15,5 +15,10 @@ export const verifySession = cache(async () => {
 
   const data = await response.json();
 
-  return { isAuth: true, userId: data.user.id };
+  return {
+    isAuth: true,
+    userId: data.user.id,
+    role: data.user.role,
+    username: data.user.username,
+  };
 });

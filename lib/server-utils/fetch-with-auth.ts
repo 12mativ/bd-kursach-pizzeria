@@ -1,3 +1,5 @@
+"use server";
+
 import { cookies } from "next/headers";
 
 export async function fetchWithAuth(url: string, options: RequestInit = {}) {
@@ -16,4 +18,4 @@ export async function fetchWithAuth(url: string, options: RequestInit = {}) {
   });
 
   return response;
-} 
+}

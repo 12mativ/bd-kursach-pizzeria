@@ -1,6 +1,6 @@
 "use client";
 
-import { signup, FormState } from "./actions";
+import { signup, FormState, logout } from "./actions";
 import { useActionState } from "react";
 import { Input } from "@/components/ui/input";
 import { SubmitButton } from "@/components/submit-button";
@@ -29,17 +29,23 @@ export default function AuthPage() {
   const router = useRouter();
 
   useEffect(() => {
-    if (token) {
-      router.push("/");
-    }
-  }, [token, router]);
+    const checkAuth = async () => {
+      const { isAuth } = await verifySession();
+      if (isAuth) {
+        router.push("/");
+      } else {
+        logout();
+      }
+    };
+    checkAuth();
+  }, [router]);
 
-  useEffect(() => {
-    if (state?.access_token) {
-      saveToken(state.access_token);
-      router.push("/");
-    }
-  }, [state, saveToken, router]);
+  // useEffect(() => {
+  //   if (state?.access_token) {
+  //     saveToken(state.access_token);
+  //     router.push("/");
+  //   }
+  // }, [state, saveToken, router]);
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-zinc-900">

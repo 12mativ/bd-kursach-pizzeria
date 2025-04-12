@@ -9,7 +9,8 @@ export type ModalType =
   | "editWorkplace"
   | "deleteEmployee"
   | "deleteWorkplace"
-  | "addEmployeeToWorkplace";
+  | "addEmployeeToWorkplace"
+  | "createPizza";
 
 export interface ModalData {
   employeeData?: IEmployeeInfo,

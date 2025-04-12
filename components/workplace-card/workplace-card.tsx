@@ -1,9 +1,11 @@
-import { fetchWithAuth } from "@/utils/fetch";
 import { IEmployeeInfo } from "../employee-card/employee-card";
 import { DeleteButton } from "./delete-button";
 import { EditButton } from "./edit-button";
 import { AddEmployeeButton } from "./add-employee-button";
-import { cn, formatRole } from "@/lib/utils";
+import { cn, formatRole, isAdmin } from "@/lib/utils";
+import { fetchWithAuth } from "@/lib/server-utils/fetch-with-auth";
+import { cookies } from "next/headers";
+import { jwtDecode } from "jwt-decode";
 
 export interface IWorkplaceInfo {
   id: number;
@@ -22,6 +24,15 @@ export const WorkplaceCard = async ({
     `${process.env.BACKEND_URL}/workplaces/${workplace.id}/employees`
   );
   const assignedEmployeesData: IEmployeeInfo[] = await assignedEmployees.json();
+
+  const cookieStore = await cookies();
+  const token = cookieStore.get("token")?.value;
+
+  var userInfo;
+
+  if (token) {
+    userInfo = jwtDecode(token);
+  }
 
   return (
     <div className="flex flex-col flex-wrap gap-y-2 border border-neutral-700 p-2 rounded w-[300px] bg-neutral-800">
@@ -48,7 +59,7 @@ export const WorkplaceCard = async ({
         {assignedEmployeesData.length > 0 && (
           <>
             <p className="text-zinc-400">Назначенные сотрудники:</p>
-            <div className="flex flex-col gap-y-2">
+            <div className="flex flex-col gap-y-2 max-h-32 overflow-y-auto">
               {assignedEmployeesData.map((employee) => (
                 <p key={employee.id}>
                   {employee.surname} {employee.name[0]}.{" "}
@@ -72,9 +83,13 @@ export const WorkplaceCard = async ({
         )}
       </div>
       <div className="flex flex-wrap items-center gap-2 mt-2">
-        <EditButton workplace={workplace} />
-        <DeleteButton workplace={workplace} />
-        <AddEmployeeButton workplaceId={workplace.id} employees={employees} assignedEmployeesData={assignedEmployeesData} />
+        {isAdmin(userInfo) && <EditButton workplace={workplace} />}
+        {isAdmin(userInfo) && <DeleteButton workplace={workplace} />}
+        <AddEmployeeButton
+          workplaceId={workplace.id}
+          employees={employees}
+          assignedEmployeesData={assignedEmployeesData}
+        />
       </div>
     </div>
   );
