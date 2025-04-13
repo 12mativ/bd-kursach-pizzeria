@@ -29,16 +29,17 @@ export default function AuthPage() {
   const router = useRouter();
 
   useEffect(() => {
-    const checkAuth = async () => {
-      const { isAuth } = await verifySession();
-      if (isAuth) {
-        router.push("/");
-      } else {
-        logout();
-      }
-    };
-    checkAuth();
-  }, [router]);
+    if (token) {
+      router.push("/");
+    }
+  }, [token, router]);
+
+  useEffect(() => {
+    if (state?.access_token) {
+      saveToken(state.access_token);
+      router.push("/");
+    }
+  }, [state, saveToken, router]);
 
   // useEffect(() => {
   //   if (state?.access_token) {
@@ -138,6 +139,7 @@ export default function AuthPage() {
               name="password"
               type="password"
               required
+              defaultValue={state?.password}
               className="bg-zinc-700 border-zinc-600 text-zinc-100"
             />
             <FormError message={state?.errors?.password?.[0]} />

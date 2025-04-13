@@ -2,11 +2,11 @@
 
 import { useAuth } from "@/hooks/use-auth";
 import { logout } from "@/app/auth/actions";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import { LogOut } from "lucide-react";
 import { formatRole } from "@/lib/utils";
-
+import { useEffect, useState } from "react";
 export function Header() {
   const {
     token,
@@ -15,6 +15,8 @@ export function Header() {
     handleUnauthorized,
   } = useAuth();
   const router = useRouter();
+  const [activeMenuItem, setActiveMenuItem] = useState<string | null>(null);
+  const pathname = usePathname();
 
   const handleLogout = async () => {
     try {
@@ -53,9 +55,13 @@ export function Header() {
       id: 4,
       name: "Пицца",
       href: "/pizza",
-      roles: ["ADMIN", "MANAGER", "PIZZAMAKER", "CASHIER"],
+      roles: ["ADMIN", "MANAGER", "PIZZAMAKER", "CASHIER", "CLIENT"],
     },
   ];
+
+  useEffect(() => {
+    setActiveMenuItem(pathname);
+  }, [pathname]);
 
   return (
     <div className="fixed top-0 left-0 right-0 p-3 bg-neutral-800 z-50">
@@ -68,7 +74,8 @@ export function Header() {
                 <Link
                   key={mI.id}
                   href={mI.href}
-                  className="hover:text-indigo-400 hover:bg-neutral-700 transition p-2 rounded"
+                  className={`hover:text-indigo-400 hover:bg-neutral-700 transition p-2 rounded ${activeMenuItem === mI.href ? "text-indigo-400 bg-neutral-700" : ""}`}
+                  onClick={() => setActiveMenuItem(mI.href)}
                 >
                   {mI.name}
                 </Link>

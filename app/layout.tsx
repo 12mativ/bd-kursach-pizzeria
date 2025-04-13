@@ -6,7 +6,7 @@ import StoreProvider from "../components/providers/redux-store-provider";
 import { ModalProvider } from "@/components/providers/modal-provider";
 
 export const metadata: Metadata = {
-  title: "Pizzeria",
+  title: "Пиццерия",
   description:
     "Pizzeria delicious pizza pepperoni italia",
 };

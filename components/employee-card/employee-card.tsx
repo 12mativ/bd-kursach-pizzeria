@@ -1,8 +1,7 @@
+import { verifySession } from "@/lib/dal";
 import { cn, formatRole, isAdmin } from "@/lib/utils";
 import { DeleteButton } from "./delete-button";
 import { EditButton } from "./edit-button";
-import { jwtDecode } from "jwt-decode";
-import { cookies } from "next/headers";
 
 export interface IEmployeeInfo {
   id: number;
@@ -14,14 +13,7 @@ export interface IEmployeeInfo {
 }
 
 export const EmployeeCard = async ({ employee }: { employee: IEmployeeInfo }) => {
-  const cookieStore = await cookies();
-  const token = cookieStore.get("token")?.value;
-
-  var userInfo;
-
-  if (token) {
-    userInfo = jwtDecode(token);
-  }
+  const {role} = await verifySession();
 
   return (
     <div className="flex flex-col gap-y-2 border border-neutral-700 p-2 rounded w-[300px] bg-neutral-800">
@@ -44,8 +36,8 @@ export const EmployeeCard = async ({ employee }: { employee: IEmployeeInfo }) =>
         {formatRole(employee.role)}
       </p>
       <div className="flex items-center gap-x-2 mt-2">
-        {isAdmin(userInfo) && <EditButton employee={employee} />}
-        {isAdmin(userInfo) && <DeleteButton employee={employee} />}
+        {role === "ADMIN" && <EditButton employee={employee} />}
+        {role === "ADMIN" && <DeleteButton employee={employee} />}
       </div>
     </div>
   );

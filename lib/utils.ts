@@ -19,7 +19,7 @@ export function formatRole(role: "PIZZAMAKER" | "MANAGER" | "CASHIER") {
       result = "Касссир";
       break;
     default:
-      result = "Суперпользователь";
+      result = "";
       break;
   }
 

@@ -1,11 +1,10 @@
+import { verifySession } from "@/lib/dal";
+import { fetchWithAuth } from "@/lib/server-utils/fetch-with-auth";
+import { cn, formatRole } from "@/lib/utils";
 import { IEmployeeInfo } from "../employee-card/employee-card";
+import { AddEmployeeButton } from "./add-employee-button";
 import { DeleteButton } from "./delete-button";
 import { EditButton } from "./edit-button";
-import { AddEmployeeButton } from "./add-employee-button";
-import { cn, formatRole, isAdmin } from "@/lib/utils";
-import { fetchWithAuth } from "@/lib/server-utils/fetch-with-auth";
-import { cookies } from "next/headers";
-import { jwtDecode } from "jwt-decode";
 
 export interface IWorkplaceInfo {
   id: number;
@@ -25,14 +24,7 @@ export const WorkplaceCard = async ({
   );
   const assignedEmployeesData: IEmployeeInfo[] = await assignedEmployees.json();
 
-  const cookieStore = await cookies();
-  const token = cookieStore.get("token")?.value;
-
-  var userInfo;
-
-  if (token) {
-    userInfo = jwtDecode(token);
-  }
+  const {role} = await verifySession();
 
   return (
     <div className="flex flex-col flex-wrap gap-y-2 border border-neutral-700 p-2 rounded w-[300px] bg-neutral-800">
@@ -83,8 +75,8 @@ export const WorkplaceCard = async ({
         )}
       </div>
       <div className="flex flex-wrap items-center gap-2 mt-2">
-        {isAdmin(userInfo) && <EditButton workplace={workplace} />}
-        {isAdmin(userInfo) && <DeleteButton workplace={workplace} />}
+        {role === "ADMIN" && <EditButton workplace={workplace} />}
+        {role === "ADMIN" && <DeleteButton workplace={workplace} />}
         <AddEmployeeButton
           workplaceId={workplace.id}
           employees={employees}
