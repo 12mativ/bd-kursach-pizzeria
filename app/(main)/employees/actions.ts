@@ -98,7 +98,7 @@ export async function registerEmployee(
   const phone = formData.get("phone") as string;
   const username = formData.get("username") as string;
   const password = formData.get("password") as string;
-  const role = formData.get("role") as "PIZZAMAKER" | "MANAGER" | "CASHIER";
+  const role = formData.get("role") as "MANAGER" | "PIZZAMAKER" | "CASHIER";
 
   const validatedFields = registerEmployeeSchema.safeParse({
     name,
@@ -107,12 +107,11 @@ export async function registerEmployee(
     phone,
     username,
     password,
-    role,
+    role: formData.get("role")
   });
-
+console.log(role)
   if (!validatedFields.success) {
     return {
-      ...prevState,
       name,
       surname,
       patronymic,
@@ -149,7 +148,7 @@ export async function registerEmployee(
     phone: "",
     username: "",
     password: "",
-    role: "PIZZAMAKER",
+    role: undefined,
     fieldErrors: undefined,
     error: undefined,
     success: true,

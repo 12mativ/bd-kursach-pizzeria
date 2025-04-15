@@ -11,6 +11,7 @@ import { AddEmployeeToWorkplaceModal } from "../modals/add-employee-to-workplace
 import { CreatePizzaModal } from "../modals/create-pizza";
 import { EditPizzaModal } from "../modals/edit-pizza";
 import { DeletePizzaModal } from "../modals/delete-pizza";
+import { SelectPizzaModal } from "../modals/select-pizza";
 
 export function ModalProvider() {
   const [isMounted, setIsMounted] = useState(false);
@@ -35,6 +36,7 @@ export function ModalProvider() {
       <CreatePizzaModal />
       <EditPizzaModal />
       <DeletePizzaModal />
+      <SelectPizzaModal />
     </>
   );
 }

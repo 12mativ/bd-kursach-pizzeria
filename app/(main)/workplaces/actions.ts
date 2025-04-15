@@ -59,7 +59,6 @@ export async function createWorkplace(
 
   return {
     fieldErrors: {},
-    error: "Рабочее место успешно создано",
     success: true,
   };
 }

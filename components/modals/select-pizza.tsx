@@ -1,13 +1,22 @@
 "use client";
 
-import { createPizza, ICreatePizzaActionState } from "@/app/(main)/pizza/actions";
-import { useActionState, useEffect } from "react";
-import { Input } from "../ui/input";
-import { Textarea } from "../ui/textarea";
+import {
+  createPizza,
+  ICreatePizzaActionState,
+} from "@/app/(main)/pizza/actions";
+import { useModal } from "@/hooks/use-modal-store";
+import Image from "next/image";
+import { useActionState, useEffect, useState } from "react";
 import { SubmitButton } from "../submit-button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
-import { useModal } from "@/hooks/use-modal-store";
 import { FormError } from "../ui/form-error";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
 
 const initialState: ICreatePizzaActionState = {
   name: "",
@@ -19,9 +28,33 @@ const initialState: ICreatePizzaActionState = {
 };
 
 export const SelectPizzaModal = () => {
-  const { isOpen, type, onClose } = useModal();
+  const { isOpen, type, onClose, data } = useModal();
   const [state, formAction] = useActionState(createPizza, initialState);
+  const [price, setPrice] = useState(0);
   const isModalOpen = isOpen && type === "selectPizza";
+
+  const handlePriceChanged = (value: string) => {
+    var result;
+
+    switch (value) {
+      case "small":
+        result = 1;
+        break;
+      case "medium":
+        result = 1.5;
+        break;
+      case "large":
+        result = 2;
+        break;
+      default:
+        result = 1;
+        break;
+    }
+
+    if (data.pizzaData?.price) {
+      setPrice(data.pizzaData?.price * result);
+    }
+  };
 
   useEffect(() => {
     if (state?.success) {
@@ -29,84 +62,67 @@ export const SelectPizzaModal = () => {
     }
   }, [state, onClose]);
 
+  useEffect(() => {
+    if (data.pizzaData?.price) {
+      setPrice(data.pizzaData.price);
+    }
+  }, [isModalOpen, data.pizzaData?.price]);
+
   return (
     <Dialog open={isModalOpen} onOpenChange={onClose}>
-      <DialogContent className="bg-zinc-900 border-zinc-800">
+      <DialogContent className="block bg-zinc-900 w-fit">
         <DialogHeader>
-          <DialogTitle className="text-zinc-100">
-            Добавить новую пиццу
+          <DialogTitle className="text-zinc-100 text-2xl">
+            {data.pizzaData?.name}
           </DialogTitle>
         </DialogHeader>
-        <form action={formAction} className="space-y-4">
-          <div className="space-y-2">
-            <label htmlFor="name" className="text-zinc-400">
-              Название пиццы
-            </label>
-            <Input
-              id="name"
-              type="text"
-              name="name"
-              required
-              className="bg-zinc-800 border-zinc-700 text-zinc-100"
-              defaultValue={state.name}
+        <div className="flex gap-x-4 w-auto">
+          {data.pizzaData?.imageUrl && (
+            <img
+              src={`${process.env.NEXT_PUBLIC_BACKEND_URL}${data.pizzaData?.imageUrl}`}
+              alt={data.pizzaData?.name}
+              className="w-[400px]"
             />
-            <FormError message={state?.fieldErrors?.name?.[0]} />
+          )}
+          <div className="flex flex-col gap-y-2">
+            <p className="text-sm text-neutral-300 w-[80%]">
+              {data.pizzaData?.description}
+            </p>
+            <form
+              action={formAction}
+              className="flex flex-col justify-between mt-2 space-y-4 h-full"
+            >
+              <div className="flex flex-col gap-y-2">
+                <label htmlFor="size" className="text-zinc-400">
+                  Выберите размер
+                </label>
+                <Select
+                  name="size"
+                  onValueChange={(value) => {
+                    handlePriceChanged(value);
+                  }}
+                  defaultValue="small"
+                >
+                  <SelectTrigger className="bg-zinc-800 border-zinc-700 text-zinc-100">
+                    <SelectValue placeholder="Выберите размер" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="small">Маленькая (25см)</SelectItem>
+                    <SelectItem value="medium">Средняя (30см)</SelectItem>
+                    <SelectItem value="large">Большая (35см)</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="flex flex-col gap-y-2">
+                <p className="text-lg font-bold">{price}₽</p>
+                <SubmitButton text="Добавить в корзину" />
+              </div>
+
+              <FormError message={state?.error} />
+            </form>
           </div>
-
-          <div className="space-y-2">
-            <label htmlFor="description" className="text-zinc-400">
-              Описание
-            </label>
-            <Textarea
-              id="description"
-              name="description"
-              className="bg-zinc-800 border-zinc-700 text-zinc-100 max-h-[200px]"
-              defaultValue={state.description}
-              rows={4}
-            />
-            <FormError message={state?.fieldErrors?.description?.[0]} />
-          </div>
-
-          <div className="space-y-2">
-            <label htmlFor="price" className="text-zinc-400">
-              Цена (маленький размер)
-            </label>
-            <Input
-              id="price"
-              type="number"
-              name="price"
-              required
-              min="0"
-              step="0.01"
-              className="bg-zinc-800 border-zinc-700 text-zinc-100"
-              defaultValue={state.price}
-            />
-            <FormError message={state?.fieldErrors?.price?.[0]} />
-          </div>
-
-          <div className="space-y-2">
-            <label htmlFor="image" className="text-zinc-400">
-              Изображение
-            </label>
-            <Input
-              id="image"
-              type="file"
-              name="image"
-              accept="image/*"
-              className="bg-zinc-800 border-zinc-700 text-zinc-100"
-            />
-          </div>
-
-          <SubmitButton text="Создать" />
-
-          <FormError message={state?.error} />
-
-          <p aria-live="polite" className="sr-only" role="status">
-            {state?.fieldErrors?.name?.[0]}
-            {state?.fieldErrors?.description?.[0]}
-            {state?.fieldErrors?.price?.[0]}
-          </p>
-        </form>
+        </div>
       </DialogContent>
     </Dialog>
   );
