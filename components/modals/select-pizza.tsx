@@ -1,15 +1,10 @@
 "use client";
 
-import {
-  createPizza,
-  ICreatePizzaActionState,
-} from "@/app/(main)/pizza/actions";
 import { useModal } from "@/hooks/use-modal-store";
-import Image from "next/image";
-import { useActionState, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import { useCart } from "../providers/cart-provider";
 import { SubmitButton } from "../submit-button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
-import { FormError } from "../ui/form-error";
 import {
   Select,
   SelectContent,
@@ -18,18 +13,9 @@ import {
   SelectValue,
 } from "../ui/select";
 
-const initialState: ICreatePizzaActionState = {
-  name: "",
-  description: "",
-  price: 0,
-  fieldErrors: {},
-  error: "",
-  success: false,
-};
-
 export const SelectPizzaModal = () => {
   const { isOpen, type, onClose, data } = useModal();
-  const [state, formAction] = useActionState(createPizza, initialState);
+  const { addToCart } = useCart();
   const [price, setPrice] = useState(0);
   const isModalOpen = isOpen && type === "selectPizza";
 
@@ -56,11 +42,19 @@ export const SelectPizzaModal = () => {
     }
   };
 
-  useEffect(() => {
-    if (state?.success) {
-      onClose();
-    }
-  }, [state, onClose]);
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    addToCart({
+      id: data.pizzaData!.id!,
+      name: data.pizzaData!.name!,
+      description: data.pizzaData!.description!,
+      imageUrl: data.pizzaData?.imageUrl!,
+      //@ts-expect-error: size IS in target
+      size: e.target.size.value,
+      price,
+    });
+    onClose();
+  };
 
   useEffect(() => {
     if (data.pizzaData?.price) {
@@ -89,7 +83,7 @@ export const SelectPizzaModal = () => {
               {data.pizzaData?.description}
             </p>
             <form
-              action={formAction}
+              onSubmit={handleSubmit}
               className="flex flex-col justify-between mt-2 space-y-4 h-full"
             >
               <div className="flex flex-col gap-y-2">
@@ -118,8 +112,6 @@ export const SelectPizzaModal = () => {
                 <p className="text-lg font-bold">{price}₽</p>
                 <SubmitButton text="Добавить в корзину" />
               </div>
-
-              <FormError message={state?.error} />
             </form>
           </div>
         </div>

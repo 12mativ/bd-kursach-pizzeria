@@ -7,6 +7,7 @@ import Link from "next/link";
 import { LogOut } from "lucide-react";
 import { formatRole } from "@/lib/utils";
 import { useEffect, useState } from "react";
+import { useCart } from "../providers/cart-provider";
 export function Header() {
   const {
     token,
@@ -16,6 +17,7 @@ export function Header() {
   } = useAuth();
   const router = useRouter();
   const [activeMenuItem, setActiveMenuItem] = useState<string | null>(null);
+  const { cart } = useCart();
   const pathname = usePathname();
 
   const handleLogout = async () => {
@@ -56,6 +58,12 @@ export function Header() {
       name: "Пицца",
       href: "/pizza",
       roles: ["ADMIN", "MANAGER", "PIZZAMAKER", "CASHIER", "CLIENT"],
+    },
+    {
+      id: 5,
+      name: `Корзина | ${cart.length}`,
+      href: "/cart",
+      roles: ["CLIENT"],
     },
   ];
 

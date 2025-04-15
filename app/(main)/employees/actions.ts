@@ -109,7 +109,6 @@ export async function registerEmployee(
     password,
     role: formData.get("role")
   });
-console.log(role)
   if (!validatedFields.success) {
     return {
       name,

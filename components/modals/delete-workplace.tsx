@@ -28,7 +28,7 @@ export const DeleteWorkplaceModal = () => {
 
   return (
     <Dialog open={isModalOpen} onOpenChange={onClose}>
-      <DialogContent className="bg-zinc-900 border-zinc-800">
+      <DialogContent className="bg-zinc-900 border-zinc-800 w-[40%]">
         <DialogHeader>
           <DialogTitle className="flex flex-col gap-y-2 text-zinc-100">
             <p>Вы уверены, что хотите удалить рабочее место?</p>

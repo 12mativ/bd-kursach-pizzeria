@@ -6,17 +6,15 @@ import { fetchWithAuth } from "@/lib/server-utils/fetch-with-auth";
 
 const WorkplaceSchema = z.object({
   name: z.string().min(1, "Название обязательно"),
-  status: z.enum(["free", "occupied", "partly occupied"], {
-    required_error: "Статус обязателен",
-  }),
+  capacity: z.number({message: "Поле обязательно для заполнения"}).min(0, {message: "Значение вместимости рабочего места должно быть положительным"}),
 });
 
 export interface ICreateWorkplaceActionState {
   name?: string;
-  status?: string;
+  capacity?: number;
   fieldErrors?: {
     name?: string[];
-    status?: string[];
+    capacity?: string[];
   };
   error?: string;
   success?: boolean;
@@ -26,15 +24,19 @@ export async function createWorkplace(
   state: ICreateWorkplaceActionState,
   formData: FormData
 ): Promise<ICreateWorkplaceActionState> {
+  const name = formData.get("name") as string;
+  const capacity = Number(formData.get("capacity"));
+
   const validatedFields = WorkplaceSchema.safeParse({
-    name: formData.get("name"),
-    status: formData.get("status"),
+    name,
+    capacity
   });
 
   if (!validatedFields.success) {
     return {
+      name,
+      capacity,
       fieldErrors: validatedFields.error.flatten().fieldErrors,
-      error: "Неверные данные. Не удалось создать рабочее место.",
       success: false,
     };
   }
@@ -49,6 +51,8 @@ export async function createWorkplace(
 
   if (!response.ok) {
     return {
+      name,
+      capacity,
       fieldErrors: {},
       error: "Ошибка при создании рабочего места",
       success: false,
@@ -69,7 +73,7 @@ export async function editWorkplace(
 ): Promise<ICreateWorkplaceActionState> {
   const validatedFields = WorkplaceSchema.safeParse({
     name: formData.get("name"),
-    status: formData.get("status"),
+    capacity: Number(formData.get("capacity")),
   });
 
   if (!validatedFields.success) {
@@ -137,6 +141,10 @@ export async function addEmployeeToWorkplace(
       body: JSON.stringify({ employeeIds }),
     }
   );
+
+  if (response.status === 400) {
+    return { error: "Количество сотрудников превысило вместимость рабочего места" };
+  }
 
   if (!response.ok) {
     return { error: "Ошибка при добавлении сотрудников" };

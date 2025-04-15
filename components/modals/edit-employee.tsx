@@ -42,7 +42,7 @@ export const EditEmployeeModal = () => {
 
   return (
     <Dialog open={isModalOpen} onOpenChange={onClose}>
-      <DialogContent className="bg-zinc-900 border-zinc-800">
+      <DialogContent className="bg-zinc-900 border-zinc-800 w-[40%]">
         <DialogHeader>
           <DialogTitle className="text-zinc-100">
             Изменить данные сотрудника

@@ -3,7 +3,6 @@ import { fetchWithAuth } from "@/lib/server-utils/fetch-with-auth";
 import { redirect } from "next/navigation";
 export default async function Home() {
   const { isAuth, userId, role, username } = await verifySession();
-  console.log(role)
   if (!isAuth) {
     redirect("/auth");
   }
@@ -18,7 +17,6 @@ export default async function Home() {
       })
     : null;
 
-  console.log(userInfo)
   const userInfoData = userInfo ? await userInfo.json() : {};
   return (
     <div className="container mx-auto px-4 py-8 space-y-8">

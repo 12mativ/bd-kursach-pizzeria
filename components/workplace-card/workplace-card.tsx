@@ -10,6 +10,7 @@ export interface IWorkplaceInfo {
   id: number;
   name: string;
   status: "free" | "occupied" | "partly occupied";
+  capacity: number;
 }
 
 export const WorkplaceCard = async ({
@@ -41,10 +42,11 @@ export const WorkplaceCard = async ({
           }`}
         >
           {workplace.status === "free"
-            ? "Свободно"
+            ? "Свободно "
             : workplace.status === "occupied"
-            ? "Занято"
-            : "Частично занято"}
+            ? "Занято "
+            : "Частично занято "}
+          ({assignedEmployeesData.length} / {workplace.capacity})
         </span>
       </p>
       <div>

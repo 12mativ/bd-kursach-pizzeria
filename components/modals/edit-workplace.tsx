@@ -7,7 +7,6 @@ import { SubmitButton } from "../submit-button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
 import { FormError } from "../ui/form-error";
 import { Input } from "../ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 
 export const EditWorkplaceModal = () => {
   const { isOpen, type, onClose, data } = useModal();
@@ -15,7 +14,7 @@ export const EditWorkplaceModal = () => {
 
   const [state, formAction] = useActionState(editWorkplace, {
     name: workplaceData?.name ?? "",
-    status: workplaceData?.status ?? "free",
+    capacity: workplaceData?.capacity ?? 0,
     success: false,
     error: "",
   });
@@ -30,7 +29,7 @@ export const EditWorkplaceModal = () => {
 
   return (
     <Dialog open={isModalOpen} onOpenChange={onClose}>
-      <DialogContent className="bg-zinc-900 border-zinc-800">
+      <DialogContent className="bg-zinc-900 border-zinc-800 w-[40%]">
         <DialogHeader>
           <DialogTitle className="text-zinc-100">
             Редактировать рабочее место
@@ -54,20 +53,18 @@ export const EditWorkplaceModal = () => {
           </div>
 
           <div className="space-y-2">
-            <label htmlFor="status" className="text-zinc-400">
-              Выберите статус
+            <label htmlFor="capacity" className="text-zinc-400">
+              Введите вместимость рабочего места
             </label>
-            <Select name="status" defaultValue={workplaceData?.status}>
-              <SelectTrigger className="bg-zinc-800 border-zinc-700 text-zinc-100">
-                <SelectValue placeholder="Выберите статус" />
-              </SelectTrigger>
-              <SelectContent className="bg-zinc-900 border-zinc-800">
-                <SelectItem value="free" className="text-zinc-100">Свободно</SelectItem>
-                <SelectItem value="occupied" className="text-zinc-100">Занято</SelectItem>
-                <SelectItem value="partly occupied" className="text-zinc-100">Частично занято</SelectItem>
-              </SelectContent>
-            </Select>
-            <FormError message={state?.fieldErrors?.status?.[0]} />
+            <Input
+              id="capacity"
+              type="number"
+              name="capacity"
+              required
+              defaultValue={workplaceData?.capacity}
+              className="bg-zinc-800 border-zinc-700 text-zinc-100"
+            />
+            <FormError message={state?.fieldErrors?.capacity?.[0]} />
           </div>
 
           <SubmitButton text="Сохранить" />

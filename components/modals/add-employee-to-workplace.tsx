@@ -12,10 +12,12 @@ import { useModal } from "@/hooks/use-modal-store";
 import { useState, useEffect } from "react";
 import { SubmitButton } from "../submit-button";
 import { cn, formatRole } from "@/lib/utils";
+import { FormError } from "../ui/form-error";
 
 export function AddEmployeeToWorkplaceModal() {
   const { type, isOpen, onClose, data } = useModal();
   const [selectedEmployees, setSelectedEmployees] = useState<string[]>([]);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     if (data.assignedEmployeesData) {
@@ -40,13 +42,16 @@ export function AddEmployeeToWorkplaceModal() {
     selectedEmployees.forEach((id) => formData.append("employeeIds", id));
     const result = await addEmployeeToWorkplace({ error: "" }, formData);
     if (result.success) {
+      setError("");
       onClose();
+    } else {
+      setError(result.error!)
     }
   };
 
   return (
     <Dialog open={isModalOpen} onOpenChange={onClose}>
-      <DialogContent className="bg-zinc-900 text-zinc-100">
+      <DialogContent className="bg-zinc-900 text-zinc-100 w-[40%]">
         <DialogHeader>
           <DialogTitle>Добавить сотрудников</DialogTitle>
         </DialogHeader>
@@ -84,6 +89,7 @@ export function AddEmployeeToWorkplaceModal() {
               </div>
             ))}
           </div>
+          <FormError message={error} />
           <SubmitButton text="Сохранить" />
         </form>
       </DialogContent>

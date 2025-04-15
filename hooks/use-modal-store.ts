@@ -17,7 +17,11 @@ export type ModalType =
 
 export interface ModalData {
   employeeData?: IEmployeeInfo,
-  workplaceData?: IWorkplaceInfo,
+  workplaceData?: {
+    id: number;
+    name: string;
+    capacity: number;
+  },
   workplaceId?: number;
   employees?: IEmployeeInfo[];
   assignedEmployeesData?: IEmployeeInfo[];
