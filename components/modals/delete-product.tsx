@@ -9,9 +9,9 @@ import { SubmitButton } from "../submit-button";
 import { Button } from "../ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
 import { FormError } from "../ui/form-error";
-import { deletePizza } from "@/app/(main)/pizza/actions";
+import { deletePizza } from "@/app/(main)/products/actions";
 
-export const DeletePizzaModal = () => {
+export const DeleteProductModal = () => {
   const { isOpen, type, onClose, data } = useModal();
 
   const initialState = {
@@ -21,7 +21,7 @@ export const DeletePizzaModal = () => {
 
   const [state, formAction] = useActionState(deletePizza, initialState);
 
-  const isModalOpen = isOpen && type === "deletePizza";
+  const isModalOpen = isOpen && type === "deleteProduct";
 
   useEffect(() => {
     if (state?.success) {
@@ -34,10 +34,10 @@ export const DeletePizzaModal = () => {
       <DialogContent className="bg-zinc-900 border-zinc-800 w-[40%]">
         <DialogHeader>
           <DialogTitle className="flex flex-col gap-y-2 text-zinc-100">
-            <p>Вы уверены, что хотите удалить пиццу?</p>
+            <p>Вы уверены, что хотите удалить</p>
             <p className="text-indigo-500">
-              {data.pizzaData?.name}
-            </p>
+              {data.productData?.name}
+            </p>?
           </DialogTitle>
         </DialogHeader>
         <form action={formAction} className="space-y-4">
@@ -56,7 +56,7 @@ export const DeletePizzaModal = () => {
             id="id"
             type="hidden"
             name="id"
-            defaultValue={data.pizzaData?.id}
+            defaultValue={data.productData?.id}
           />
 
           <FormError message={state.error} />

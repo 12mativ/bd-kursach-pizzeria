@@ -8,7 +8,7 @@ export default async function Home() {
   }
 
   if (role !== "ADMIN" && role !== "MANAGER" && role !== "PIZZAMAKER" && role !== "CASHIER") {
-    redirect("/pizza");
+    redirect("/products");
   }
 
   const userInfo = role !== "ADMIN" 

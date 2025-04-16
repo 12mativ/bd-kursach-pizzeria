@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { IEmployeeInfo } from "../components/employee-card/employee-card";
 import { IWorkplaceInfo } from "@/components/workplace-card/workplace-card";
-import { IPizzaInfo } from "@/components/pizza-card/pizza-card";
+import { IProductInfo } from "@/components/product-card/product-card";
 export type ModalType =
   | "createEmployee"
   | "editEmployee"
@@ -10,10 +10,10 @@ export type ModalType =
   | "deleteEmployee"
   | "deleteWorkplace"
   | "addEmployeeToWorkplace"
-  | "createPizza"
-  | "editPizza"
-  | "deletePizza"
-  | "selectPizza";
+  | "createProduct"
+  | "editProduct"
+  | "deleteProduct"
+  | "selectProduct"
 
 export interface ModalData {
   employeeData?: IEmployeeInfo,
@@ -25,7 +25,7 @@ export interface ModalData {
   workplaceId?: number;
   employees?: IEmployeeInfo[];
   assignedEmployeesData?: IEmployeeInfo[];
-  pizzaData?: IPizzaInfo;
+  productData?: IProductInfo;
 }
 
 interface ModalStore {

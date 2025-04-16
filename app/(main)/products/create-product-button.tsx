@@ -8,10 +8,10 @@ export default function CreatePizzaButton() {
 
   return (
     <Button
-      onClick={() => onOpen("createPizza")}
+      onClick={() => onOpen("createProduct")}
       className="bg-indigo-600 hover:bg-indigo-500 cursor-pointer w-fit"
     >
-      Добавить пиццу +
+      Добавить продукт +
     </Button>
   );
 }

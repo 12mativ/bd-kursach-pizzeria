@@ -1,31 +1,28 @@
 "use client";
 
-import { editPizza, ICreatePizzaActionState } from "@/app/(main)/pizza/actions";
-import { useModal } from "@/hooks/use-modal-store";
+import { createProduct, ICreateProductActionState } from "@/app/(main)/products/actions";
 import { useActionState, useEffect } from "react";
-import { SubmitButton } from "../submit-button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
-import { FormError } from "../ui/form-error";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
+import { SubmitButton } from "../submit-button";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
+import { useModal } from "@/hooks/use-modal-store";
+import { FormError } from "../ui/form-error";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 
+const initialState: ICreateProductActionState = {
+  name: "",
+  description: "",
+  price: 0,
+  fieldErrors: {},
+  error: "",
+  success: false,
+};
 
-export const EditPizzaModal = () => {
-  const { isOpen, type, onClose, data } = useModal();
-  const pizzaData = data.pizzaData;
-
-  const initialState: ICreatePizzaActionState = {
-    id: pizzaData?.id,
-    name: pizzaData?.name ?? "",
-    description: pizzaData?.description ?? "",
-    price: pizzaData?.price ?? 0,
-    success: false,
-    error: "",
-  };
-
-  const [state, formAction] = useActionState(editPizza, initialState);
-
-  const isModalOpen = isOpen && type === "editPizza";
+export const CreateProductModal = () => {
+  const { isOpen, type, onClose } = useModal();
+  const [state, formAction] = useActionState(createProduct, initialState);
+  const isModalOpen = isOpen && type === "createProduct";
 
   useEffect(() => {
     if (state?.success) {
@@ -33,20 +30,18 @@ export const EditPizzaModal = () => {
     }
   }, [state, onClose]);
 
-  if (!pizzaData) return null;
-
   return (
     <Dialog open={isModalOpen} onOpenChange={onClose}>
       <DialogContent className="bg-zinc-900 border-zinc-800 w-[40%]">
         <DialogHeader>
           <DialogTitle className="text-zinc-100">
-            Изменить данные пиццы
+            Добавить новый продукт
           </DialogTitle>
         </DialogHeader>
         <form action={formAction} className="space-y-4">
           <div className="space-y-2">
             <label htmlFor="name" className="text-zinc-400">
-              Название пиццы
+              Название
             </label>
             <Input
               id="name"
@@ -54,7 +49,7 @@ export const EditPizzaModal = () => {
               name="name"
               required
               className="bg-zinc-800 border-zinc-700 text-zinc-100"
-              defaultValue={pizzaData.name}
+              defaultValue={state.name}
             />
             <FormError message={state?.fieldErrors?.name?.[0]} />
           </div>
@@ -67,7 +62,7 @@ export const EditPizzaModal = () => {
               id="description"
               name="description"
               className="bg-zinc-800 border-zinc-700 text-zinc-100 max-h-[200px]"
-              defaultValue={pizzaData.description}
+              defaultValue={state.description}
               rows={4}
             />
             <FormError message={state?.fieldErrors?.description?.[0]} />
@@ -75,7 +70,7 @@ export const EditPizzaModal = () => {
 
           <div className="space-y-2">
             <label htmlFor="price" className="text-zinc-400">
-              Цена (маленький размер)
+              Цена (базовая)
             </label>
             <Input
               id="price"
@@ -85,7 +80,7 @@ export const EditPizzaModal = () => {
               min="0"
               step="0.01"
               className="bg-zinc-800 border-zinc-700 text-zinc-100"
-              defaultValue={pizzaData.price}
+              defaultValue={state.price}
             />
             <FormError message={state?.fieldErrors?.price?.[0]} />
           </div>
@@ -103,14 +98,23 @@ export const EditPizzaModal = () => {
             />
           </div>
 
-          <input
-            id="id"
-            type="hidden"
-            name="id"
-            defaultValue={pizzaData?.id}
-          />
+          <div className="space-y-2">
+            <label htmlFor="productType" className="text-zinc-400">
+              Выберите тип продукта
+            </label>
+            <Select name="productType">
+              <SelectTrigger className="bg-zinc-800 border-zinc-700 text-zinc-100">
+                <SelectValue placeholder="Выберите тип продукта" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="PIZZA">Пицца</SelectItem>
+                <SelectItem value="DRINK">Напиток</SelectItem>
+              </SelectContent>
+            </Select>
+            <FormError message={state?.fieldErrors?.productType?.[0]} />
+          </div>
 
-          <SubmitButton text="Сохранить" />
+          <SubmitButton text="Создать" />
 
           <FormError message={state?.error} />
 

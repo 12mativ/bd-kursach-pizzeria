@@ -1,27 +1,31 @@
 "use client";
 
-import { createPizza, ICreatePizzaActionState } from "@/app/(main)/pizza/actions";
+import { editProduct, ICreateProductActionState } from "@/app/(main)/products/actions";
+import { useModal } from "@/hooks/use-modal-store";
 import { useActionState, useEffect } from "react";
-import { Input } from "../ui/input";
-import { Textarea } from "../ui/textarea";
 import { SubmitButton } from "../submit-button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
-import { useModal } from "@/hooks/use-modal-store";
 import { FormError } from "../ui/form-error";
+import { Input } from "../ui/input";
+import { Textarea } from "../ui/textarea";
 
-const initialState: ICreatePizzaActionState = {
-  name: "",
-  description: "",
-  price: 0,
-  fieldErrors: {},
-  error: "",
-  success: false,
-};
 
-export const CreatePizzaModal = () => {
-  const { isOpen, type, onClose } = useModal();
-  const [state, formAction] = useActionState(createPizza, initialState);
-  const isModalOpen = isOpen && type === "createPizza";
+export const EditProductModal = () => {
+  const { isOpen, type, onClose, data } = useModal();
+  const productData = data.productData;
+
+  const initialState: ICreateProductActionState = {
+    id: productData?.id,
+    name: productData?.name ?? "",
+    description: productData?.description ?? "",
+    price: productData?.price ?? 0,
+    success: false,
+    error: "",
+  };
+
+  const [state, formAction] = useActionState(editProduct, initialState);
+
+  const isModalOpen = isOpen && type === "editProduct";
 
   useEffect(() => {
     if (state?.success) {
@@ -29,18 +33,20 @@ export const CreatePizzaModal = () => {
     }
   }, [state, onClose]);
 
+  if (!productData) return null;
+
   return (
     <Dialog open={isModalOpen} onOpenChange={onClose}>
       <DialogContent className="bg-zinc-900 border-zinc-800 w-[40%]">
         <DialogHeader>
           <DialogTitle className="text-zinc-100">
-            Добавить новую пиццу
+            Изменить данные продукта
           </DialogTitle>
         </DialogHeader>
         <form action={formAction} className="space-y-4">
           <div className="space-y-2">
             <label htmlFor="name" className="text-zinc-400">
-              Название пиццы
+              Название
             </label>
             <Input
               id="name"
@@ -48,7 +54,7 @@ export const CreatePizzaModal = () => {
               name="name"
               required
               className="bg-zinc-800 border-zinc-700 text-zinc-100"
-              defaultValue={state.name}
+              defaultValue={productData.name}
             />
             <FormError message={state?.fieldErrors?.name?.[0]} />
           </div>
@@ -61,7 +67,7 @@ export const CreatePizzaModal = () => {
               id="description"
               name="description"
               className="bg-zinc-800 border-zinc-700 text-zinc-100 max-h-[200px]"
-              defaultValue={state.description}
+              defaultValue={productData.description}
               rows={4}
             />
             <FormError message={state?.fieldErrors?.description?.[0]} />
@@ -69,7 +75,7 @@ export const CreatePizzaModal = () => {
 
           <div className="space-y-2">
             <label htmlFor="price" className="text-zinc-400">
-              Цена (маленький размер)
+              Цена (базовая)
             </label>
             <Input
               id="price"
@@ -79,7 +85,7 @@ export const CreatePizzaModal = () => {
               min="0"
               step="0.01"
               className="bg-zinc-800 border-zinc-700 text-zinc-100"
-              defaultValue={state.price}
+              defaultValue={productData.price}
             />
             <FormError message={state?.fieldErrors?.price?.[0]} />
           </div>
@@ -97,7 +103,14 @@ export const CreatePizzaModal = () => {
             />
           </div>
 
-          <SubmitButton text="Создать" />
+          <input
+            id="id"
+            type="hidden"
+            name="id"
+            defaultValue={productData?.id}
+          />
+
+          <SubmitButton text="Сохранить" />
 
           <FormError message={state?.error} />
 

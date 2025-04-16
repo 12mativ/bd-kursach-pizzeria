@@ -1,11 +1,11 @@
 "use client";
 
 import React, { createContext, useContext, useState, ReactNode } from "react";
-import { IPizzaInfo } from "../pizza-card/pizza-card";
+import { IProductInfo } from "../product-card/product-card";
 
 type CartContextType = {
-  cart: IPizzaInfo[];
-  addToCart: (pizza: IPizzaInfo) => void;
+  cart: IProductInfo[];
+  addToCart: (pizza: IProductInfo) => void;
   removeFromCart: (id: number) => void;
   clearCart: () => void;
 };
@@ -13,18 +13,18 @@ type CartContextType = {
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
 export const CartProvider = ({ children }: { children: ReactNode }) => {
-  const [cart, setCart] = useState<IPizzaInfo[]>([]);
+  const [cart, setCart] = useState<IProductInfo[]>([]);
 
-  const addToCart = (pizza: IPizzaInfo) => {
+  const addToCart = (pizza: IProductInfo) => {
     setCart((prevCart) => {
-      // const existingPizza = prevCart.find((item) => item.id === pizza.id);
-      // if (existingPizza) {
-      //   return prevCart.map((item) =>
-      //     item.id === pizza.id
-      //       ? { ...item, quantity: item.quantity + pizza.quantity }
-      //       : item
-      //   );
-      // }
+      const existingPizza = prevCart.find((item) => item.id === pizza.id);
+      if (existingPizza) {
+        return prevCart.map((item) =>
+          item.id === pizza.id
+            ? { ...item, quantity: item.quantity + pizza.quantity }
+            : item
+        );
+      }
       return [...prevCart, pizza];
     });
   };

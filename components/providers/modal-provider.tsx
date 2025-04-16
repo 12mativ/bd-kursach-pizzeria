@@ -8,10 +8,10 @@ import { EditWorkplaceModal } from "../modals/edit-workplace";
 import { CreateWorkplaceModal } from "../modals/create-workplace";
 import { DeleteWorkplaceModal } from "../modals/delete-workplace";
 import { AddEmployeeToWorkplaceModal } from "../modals/add-employee-to-workplace";
-import { CreatePizzaModal } from "../modals/create-pizza";
-import { EditPizzaModal } from "../modals/edit-pizza";
-import { DeletePizzaModal } from "../modals/delete-pizza";
-import { SelectPizzaModal } from "../modals/select-pizza";
+import { CreateProductModal } from "../modals/create-product";
+import { EditProductModal } from "../modals/edit-product";
+import { DeleteProductModal } from "../modals/delete-product";
+import { SelectPizzaModal } from "../modals/select-product";
 
 export function ModalProvider() {
   const [isMounted, setIsMounted] = useState(false);
@@ -33,9 +33,9 @@ export function ModalProvider() {
       <EditWorkplaceModal />
       <DeleteWorkplaceModal />
       <AddEmployeeToWorkplaceModal />
-      <CreatePizzaModal />
-      <EditPizzaModal />
-      <DeletePizzaModal />
+      <CreateProductModal />
+      <EditProductModal />
+      <DeleteProductModal />
       <SelectPizzaModal />
     </>
   );

@@ -55,8 +55,8 @@ export function Header() {
     },
     {
       id: 4,
-      name: "Пицца",
-      href: "/pizza",
+      name: "Меню",
+      href: "/products",
       roles: ["ADMIN", "MANAGER", "PIZZAMAKER", "CASHIER", "CLIENT"],
     },
     {
