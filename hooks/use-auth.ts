@@ -7,6 +7,8 @@ import { jwtDecode } from "jwt-decode";
 export function useAuth() {
   const [token, setToken] = useState<string | null>(null);
   const [userInfo, setUserInfo] = useState<{
+    sub: number;
+    clientId: number;
     username: string;
     role: "ADMIN" | "PIZZAMAKER" | "MANAGER" | "CASHIER";
   } | null>(null);
@@ -21,6 +23,13 @@ export function useAuth() {
       document.cookie = `token=${storedToken}; path=/`;
     }
   }, []);
+
+  // useEffect(() => {
+  //   async function func() {
+  //     fetchWithAuth(`${process.env.NEXT_PUBLIC_BACKEND_URL}/`);
+  //   }
+  //   func()
+  // }, [])
 
   useEffect(() => {
     if (token) {

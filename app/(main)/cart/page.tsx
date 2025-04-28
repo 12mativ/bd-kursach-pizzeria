@@ -6,10 +6,39 @@ import { IProductInfo } from "@/components/product-card/product-card";
 import { useCart } from "@/components/providers/cart-provider";
 import { Button } from "@/components/ui/button";
 import { Trash2 } from "lucide-react";
+import { useAuth } from "../../../hooks/use-auth";
+import { toast } from "sonner";
 
 export default function Cart() {
   const { cart, removeFromCart, clearCart } = useCart();
   const [totalAmount, setTotalAmount] = useState(0);
+  const { token, userInfo } = useAuth();
+
+  const handleCreateOrder = async () => {
+    var body = {
+      items: cart.map((el) => ({
+        product_id: el.id,
+        quantity: el.quantity,
+        variant_name: el.size,
+      })),
+      clientId: userInfo?.clientId,
+    };
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/orders`,
+      {
+        method: "POST",
+        body: JSON.stringify(body),
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    ).then(() => {
+      toast("Заказ успешно созадан!")
+    }).catch(() => {
+      toast("Произошла ошибка при создании заказа.")
+    });
+  };
 
   useEffect(() => {
     var sum = 0;
@@ -80,6 +109,12 @@ export default function Cart() {
               </div>
             </div>
           ))}
+          <Button
+            className="bg-indigo-400 hover:bg-indigo-500 cursor-pointer w-fit self-center"
+            onClick={handleCreateOrder}
+          >
+            Оформить заказ
+          </Button>
         </div>
       )}
     </div>

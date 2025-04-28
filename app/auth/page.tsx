@@ -41,13 +41,6 @@ export default function AuthPage() {
     }
   }, [state, saveToken, router]);
 
-  // useEffect(() => {
-  //   if (state?.access_token) {
-  //     saveToken(state.access_token);
-  //     router.push("/");
-  //   }
-  // }, [state, saveToken, router]);
-
   return (
     <div className="flex min-h-screen items-center justify-center bg-zinc-900">
       <div className="w-full max-w-md space-y-8 rounded-lg bg-zinc-800 p-8">
