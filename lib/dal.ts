@@ -15,6 +15,8 @@ export const verifySession = cache(async () => {
 
   const data = await response.json();
 
+  console.log(data)
+
   return {
     isAuth: true,
     userId: data.user.id,

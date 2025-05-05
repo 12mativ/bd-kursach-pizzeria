@@ -35,6 +35,7 @@ export default function Cart() {
       }
     ).then(() => {
       toast("Заказ успешно созадан!")
+      clearCart();
     }).catch(() => {
       toast("Произошла ошибка при создании заказа.")
     });
@@ -110,7 +111,7 @@ export default function Cart() {
             </div>
           ))}
           <Button
-            className="bg-indigo-400 hover:bg-indigo-500 cursor-pointer w-fit self-center"
+            className="bg-indigo-500 hover:bg-indigo-600 cursor-pointer w-fit self-center"
             onClick={handleCreateOrder}
           >
             Оформить заказ

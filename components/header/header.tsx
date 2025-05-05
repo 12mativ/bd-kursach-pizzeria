@@ -65,6 +65,12 @@ export function Header() {
       href: "/cart",
       roles: ["CLIENT"],
     },
+    {
+      id: 6,
+      name: `Заказы`,
+      href: "/orders",
+      roles: ["CLIENT"],
+    },
   ];
 
   useEffect(() => {
