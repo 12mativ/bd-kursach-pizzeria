@@ -69,7 +69,7 @@ export function Header() {
       id: 6,
       name: `Заказы`,
       href: "/orders",
-      roles: ["CLIENT"],
+      roles: ["ADMIN", "MANAGER", "PIZZAMAKER", "CASHIER", "CLIENT"],
     },
   ];
 
