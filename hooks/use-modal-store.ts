@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { IEmployeeInfo } from "../components/employee-card/employee-card";
 import { IWorkplaceInfo } from "@/components/workplace-card/workplace-card";
 import { IProductInfo } from "@/components/product-card/product-card";
+import { IShift } from "../app/(main)/schedule/page";
 export type ModalType =
   | "createEmployee"
   | "editEmployee"
@@ -14,6 +15,7 @@ export type ModalType =
   | "editProduct"
   | "deleteProduct"
   | "selectProduct"
+  | "assignShift"
 
 export interface ModalData {
   employeeData?: IEmployeeInfo,
@@ -26,6 +28,7 @@ export interface ModalData {
   employees?: IEmployeeInfo[];
   assignedEmployeesData?: IEmployeeInfo[];
   productData?: IProductInfo;
+  shiftsData?: IShift[];
 }
 
 interface ModalStore {

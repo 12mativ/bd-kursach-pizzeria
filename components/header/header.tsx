@@ -71,6 +71,12 @@ export function Header() {
       href: "/orders",
       roles: ["ADMIN", "MANAGER", "PIZZAMAKER", "CASHIER", "CLIENT"],
     },
+    {
+      id: 7,
+      name: `Расписание`,
+      href: "/schedule",
+      roles: ["ADMIN", "MANAGER", "PIZZAMAKER", "CASHIER"],
+    },
   ];
 
   useEffect(() => {

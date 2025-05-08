@@ -2,7 +2,6 @@ import { OrderCard } from "@/components/order-card/order-card";
 import { verifySession } from "@/lib/dal";
 import { fetchWithAuth } from "@/lib/server-utils/fetch-with-auth";
 import { jwtDecode } from "jwt-decode";
-import { CalendarDays, ChefHat, Clock } from "lucide-react";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 

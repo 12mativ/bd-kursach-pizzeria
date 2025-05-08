@@ -12,6 +12,7 @@ import { CreateProductModal } from "../modals/create-product";
 import { EditProductModal } from "../modals/edit-product";
 import { DeleteProductModal } from "../modals/delete-product";
 import { SelectPizzaModal } from "../modals/select-product";
+import { AssignEmployeeModal } from "../modals/choose-shift";
 
 export function ModalProvider() {
   const [isMounted, setIsMounted] = useState(false);
@@ -37,6 +38,7 @@ export function ModalProvider() {
       <EditProductModal />
       <DeleteProductModal />
       <SelectPizzaModal />
+      <AssignEmployeeModal />
     </>
   );
 }
