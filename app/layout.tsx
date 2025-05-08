@@ -22,7 +22,7 @@ export default function RootLayout({
           <CartProvider>
             <ModalProvider />
             {children}
-            <Toaster />
+            <Toaster richColors />
           </CartProvider>
         </StoreProvider>
       </body>

@@ -1,10 +1,13 @@
 "use client";
 
+import { useModal } from "@/hooks/use-modal-store";
 import { useActionState, useEffect, useState } from "react";
-import { Input } from "../ui/input";
+import {
+  assignShift,
+  IAssignShiftActionState,
+} from "../../app/(main)/schedule/actions";
 import { SubmitButton } from "../submit-button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
-import { useModal } from "@/hooks/use-modal-store";
 import { FormError } from "../ui/form-error";
 import {
   Select,
@@ -13,11 +16,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
-import {
-  assignShift,
-  IAssignShiftActionState,
-} from "../../app/(main)/schedule/actions";
-import { Calendar } from "../ui/calendar";
+import { useRouter } from "next/navigation";
 
 const initialState: IAssignShiftActionState = {
   date: undefined,
@@ -29,13 +28,29 @@ export const AssignEmployeeModal = () => {
   const { isOpen, type, onClose, data } = useModal();
   const [state, formAction] = useActionState(assignShift, initialState);
   const isModalOpen = isOpen && type === "assignShift";
-  const [date, setDate] = useState<Date | undefined>(new Date());
+  const [date, setDate] = useState<string>("");
+  const [dateError, setDateError] = useState<string | null>(null);
+  const router = useRouter();
 
   useEffect(() => {
     if (state?.success) {
       onClose();
+      router.replace(`/schedule?refresh=${Date.now()}`, {
+        scroll: false // Чтобы не скроллило страницу
+      });
     }
-  }, [state, onClose]);
+  }, [state, onClose, router]);
+
+  const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedDate = e.target.value;
+    setDate(selectedDate);
+    setDateError(null);
+
+    // Проверка что дата не в прошлом
+    if (new Date(selectedDate) < new Date(new Date().setHours(0, 0, 0, 0))) {
+      setDateError("Нельзя назначить смену на прошедшую дату");
+    }
+  };
 
   return (
     <Dialog open={isModalOpen} onOpenChange={onClose}>
@@ -44,19 +59,23 @@ export const AssignEmployeeModal = () => {
           <DialogTitle className="text-zinc-100">Выбрать смену</DialogTitle>
         </DialogHeader>
         <form action={formAction} className="space-y-4">
+          <input type="hidden" name="employeeId" value={data.employeeId} />
+
           <div className="space-y-2">
-            <label htmlFor="surname" className="text-zinc-400">
+            <label htmlFor="date" className="text-zinc-400">
               Дата
             </label>
-            <Calendar
-              mode="single"
-              selected={state.date ?? date}
-              onSelect={setDate}
-              disabled={(date) =>
-                date < new Date() || date < new Date("1900-01-01")
-              }
-              initialFocus
+            <input
+              id="date"
+              name="date"
+              type="date"
+              value={date}
+              onChange={handleDateChange}
+              min={new Date().toISOString().split("T")[0]}
+              className="w-full p-2 rounded bg-zinc-600 border-zinc-700 text-zinc-100 focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              required
             />
+            {dateError && <FormError message={dateError} />}
             <FormError message={state?.fieldErrors?.date?.[0]} />
           </div>
 
@@ -70,14 +89,16 @@ export const AssignEmployeeModal = () => {
               </SelectTrigger>
               <SelectContent>
                 {data.shiftsData?.map((sD) => (
-                  <SelectItem value={String(sD.id)} key={sD.id}>{sD.start_time.slice(0, -3)} - {sD.end_time.slice(0, -3)}</SelectItem>
+                  <SelectItem value={String(sD.id)} key={sD.id}>
+                    {sD.start_time.slice(0, -3)} - {sD.end_time.slice(0, -3)}
+                  </SelectItem>
                 ))}
               </SelectContent>
             </Select>
             <FormError message={state?.fieldErrors?.shiftId?.[0]} />
           </div>
 
-          <SubmitButton text="Зарегистрировать" />
+          <SubmitButton text="Назначить смену" />
 
           <FormError message={state?.error} />
 

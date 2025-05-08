@@ -8,13 +8,13 @@ import { z } from "zod";
 
 const assignShiftSchema = z.object({
   date: z
-    .date({ message: "Выберите дату" }),
+    .string({ message: "Выберите дату" }),
   shiftId: z
     .string({ message: "Выберите смену" }),
 });
 
 export interface IAssignShiftActionState {
-  date?: Date;
+  date?: string;
   shiftId?: string;
   employeeId?: string;
   fieldErrors?: {
@@ -33,6 +33,7 @@ export async function assignShift(prevState: IAssignShiftActionState, formData: 
   }
 
   const date = formData.get("date") as string;
+  console.log(date)
   const shiftId = formData.get("shiftId") as string;
   const employeeId = formData.get("employeeId") as string;
 
@@ -42,7 +43,7 @@ export async function assignShift(prevState: IAssignShiftActionState, formData: 
   });
   if (!validatedFields.success) {
     return {
-      date: new Date(date),
+      date,
       shiftId,
       fieldErrors: validatedFields.error.flatten().fieldErrors,
       success: false,
@@ -66,6 +67,7 @@ export async function assignShift(prevState: IAssignShiftActionState, formData: 
   }
 
   revalidatePath("/schedule");
+
   return {
     error: "",
     success: true

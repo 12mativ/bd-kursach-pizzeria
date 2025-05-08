@@ -23,7 +23,7 @@ export default function Cart() {
       })),
       clientId: userInfo?.clientId,
     };
-    const response = await fetch(
+    await fetch(
       `${process.env.NEXT_PUBLIC_BACKEND_URL}/orders`,
       {
         method: "POST",

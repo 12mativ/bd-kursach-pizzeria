@@ -1,4 +1,5 @@
 import { OrderCard } from "@/components/order-card/order-card";
+import { SearchInput } from "@/components/search-input";
 import { verifySession } from "@/lib/dal";
 import { fetchWithAuth } from "@/lib/server-utils/fetch-with-auth";
 import { jwtDecode } from "jwt-decode";
@@ -21,7 +22,11 @@ export interface IOrder {
   products: IProduct[];
 }
 
-export default async function Cart() {
+export default async function Cart({
+  searchParams,
+}: {
+  searchParams?: { search?: string };
+}) {
   const { isAuth } = await verifySession();
   const cookieStore = await cookies();
   const token = cookieStore.get("token")?.value;
@@ -33,8 +38,10 @@ export default async function Cart() {
     redirect("/auth");
   }
 
-  var data;
-  var data2;
+  const searchQuery = searchParams?.search?.trim() || "";
+
+  let data;
+  let data2;
 
   if (userInfo?.role === "CLIENT") {
     data = await fetchWithAuth(
@@ -52,11 +59,11 @@ export default async function Cart() {
     );
   }
 
-  var preparingOrders;
-  var readyOrders;
+  let preparingOrders;
+  let readyOrders;
 
   if (userInfo?.role === "CLIENT") {
-    var allOrders = await data.json();
+    const allOrders = await data.json();
     preparingOrders = allOrders.filter((o: IOrder) => o.status === "preparing");
     readyOrders = allOrders.filter((o: IOrder) => o.status === "ready");
   } else {
@@ -64,24 +71,53 @@ export default async function Cart() {
     readyOrders = await data2?.json();
   }
 
+  // Функция фильтрации заказов по поисковому запросу
+  const filterOrders = (orders: IOrder[]) => {
+    if (!searchQuery) return orders;
+    return orders.filter(order => 
+      order.id.toString().includes(searchQuery)
+    );
+  };
+
+  const filteredPreparing = filterOrders(preparingOrders);
+  const filteredReady = filterOrders(readyOrders || []);
+
   return (
     <div className="container mx-auto px-4 py-8 space-y-8">
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between items-center gap-4">
         <h1 className="text-2xl font-bold text-zinc-100">Заказы</h1>
+        <div className="w-full max-w-md">
+          <SearchInput 
+            placeholder="Поиск по ID заказа..." 
+            defaultValue={searchQuery}
+          />
+        </div>
       </div>
 
       <p className="text-xl font-semibold">Активные заказы</p>
       <div className="flex flex-wrap gap-2">
-        {preparingOrders.map((o: IOrder) => (
-          <OrderCard order={o} key={o.id} />
-        ))}
+        {filteredPreparing.length > 0 ? (
+          filteredPreparing.map((o: IOrder) => (
+            <OrderCard order={o} key={o.id} />
+          ))
+        ) : (
+          <p className="text-gray-500">
+            {searchQuery ? "Не найдено активных заказов по вашему запросу" : "Нет активных заказов"}
+          </p>
+        )}
       </div>
 
       <p className="text-xl font-semibold">Архив заказов</p>
       <div className="flex flex-wrap gap-2">
-        {readyOrders.map((o: IOrder) => (
-          <OrderCard order={o} key={o.id} />
-        ))}
+        {filteredReady.length > 0 ? (
+          filteredReady.map((o: IOrder) => (
+            <OrderCard order={o} key={o.id} />
+          ))
+        ) : (
+          <p className="text-gray-500">
+            {searchQuery ? "Не найдено завершенных заказов по вашему запросу" : "Нет завершенных заказов"}
+          </p>
+        )}
       </div>
     </div>
   );

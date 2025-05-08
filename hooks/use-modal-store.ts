@@ -29,6 +29,7 @@ export interface ModalData {
   assignedEmployeesData?: IEmployeeInfo[];
   productData?: IProductInfo;
   shiftsData?: IShift[];
+  employeeId?: string;
 }
 
 interface ModalStore {
