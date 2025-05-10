@@ -33,7 +33,6 @@ export async function assignShift(prevState: IAssignShiftActionState, formData: 
   }
 
   const date = formData.get("date") as string;
-  console.log(date)
   const shiftId = formData.get("shiftId") as string;
   const employeeId = formData.get("employeeId") as string;
 

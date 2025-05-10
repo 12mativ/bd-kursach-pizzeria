@@ -20,5 +20,7 @@ export const verifySession = cache(async () => {
     userId: data.user.id,
     role: data.user.role,
     username: data.user.username,
+    employeeId: data.user.employeeId,
+    clientId: data.user.clientId
   };
 });

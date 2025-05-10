@@ -69,7 +69,7 @@ export const OrderCard = async ({ order }: { order: IOrder }) => {
       </div>
       <p className="text-right font-semibold grow">{order.totalAmount} ₽</p>
 
-      {role !== "CLIENT" && order.status !== "ready" && (
+      {(role === "ADMIN" || role === "CASHIER" || role === "MANAGER") && order.status !== "ready" && (
         <MakeOrderReadyButton order={order} />
       )}
     </div>

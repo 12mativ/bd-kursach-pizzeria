@@ -5,7 +5,7 @@ import { redirect } from "next/navigation";
 import { CreateWorkplaceButton } from "./create-workplace-button";
 
 export default async function WorkplacesPage() {
-  const { isAuth, role, userId } = await verifySession();
+  const { isAuth, role, employeeId } = await verifySession();
 
   if (!isAuth) {
     redirect("/auth");
@@ -19,7 +19,7 @@ export default async function WorkplacesPage() {
     role === "ADMIN" || role === "MANAGER"
       ? await fetchWithAuth(`${process.env.BACKEND_URL}/workplaces`)
       : await fetchWithAuth(
-          `${process.env.BACKEND_URL}/employees/${userId}/workplaces`
+          `${process.env.BACKEND_URL}/employees/${employeeId}/workplaces`
         );
   const workplaces = await workplacesResponse.json();
 
@@ -27,7 +27,7 @@ export default async function WorkplacesPage() {
     role === "ADMIN" || role === "MANAGER"
       ? await fetchWithAuth(`${process.env.BACKEND_URL}/employees`)
       : await fetchWithAuth(
-          `${process.env.BACKEND_URL}/employees/${userId}/workplaces`
+          `${process.env.BACKEND_URL}/employees/${employeeId}/workplaces`
         );
   const allEmployees =
     role === "ADMIN" || role === "MANAGER"

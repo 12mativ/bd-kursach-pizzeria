@@ -88,7 +88,7 @@ export default async function Cart({
         <h1 className="text-2xl font-bold text-zinc-100">Заказы</h1>
         <div className="w-full max-w-md">
           <SearchInput 
-            placeholder="Поиск по ID заказа..." 
+            placeholder="Поиск по номеру заказа..." 
             defaultValue={searchQuery}
           />
         </div>

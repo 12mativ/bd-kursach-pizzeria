@@ -46,7 +46,7 @@ export const WorkplaceCard = async ({
             : workplace.status === "occupied"
             ? "Занято "
             : "Частично занято "}
-          ({assignedEmployeesData.length} / {workplace.capacity})
+          {(role === "ADMIN" || role === "MANAGER") && <span>({assignedEmployeesData.length} / {workplace.capacity})</span>}
         </span>
       </p>
       <div>
