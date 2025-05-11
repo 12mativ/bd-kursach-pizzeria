@@ -58,7 +58,7 @@ export function AddEmployeeToWorkplaceModal() {
         <form action={handleSubmit} className="space-y-4">
           <div className="space-y-2 max-h-96 overflow-y-auto">
             {data.employees?.map((employee) => (
-              <div key={employee.id} className="flex items-center space-x-2">
+              employee.phone && <div key={employee.id} className="flex items-center space-x-2">
                 <Checkbox
                   id={employee.id.toString()}
                   checked={selectedEmployees.includes(employee.id.toString())}

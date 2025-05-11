@@ -36,7 +36,7 @@ export const AssignEmployeeModal = () => {
     if (state?.success) {
       onClose();
       router.replace(`/schedule?refresh=${Date.now()}`, {
-        scroll: false // Чтобы не скроллило страницу
+        scroll: false
       });
     }
   }, [state, onClose, router]);

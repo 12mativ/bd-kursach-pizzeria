@@ -79,11 +79,11 @@ export const WorkplaceCard = async ({
       <div className="flex flex-wrap items-center gap-2 mt-2">
         {role === "ADMIN" && <EditButton workplace={workplace} />}
         {role === "ADMIN" && <DeleteButton workplace={workplace} />}
-        <AddEmployeeButton
+        {(role === "ADMIN" || role === "MANAGER") && <AddEmployeeButton
           workplaceId={workplace.id}
           employees={employees}
           assignedEmployeesData={assignedEmployeesData}
-        />
+        />}
       </div>
     </div>
   );

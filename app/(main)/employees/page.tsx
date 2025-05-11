@@ -39,7 +39,7 @@ export default async function Page() {
       </div>
       <div className="flex gap-3 flex-wrap">
         {employeesFromServer.map((e) => (
-          <EmployeeCard employee={e} key={e.id} />
+          e.phone && <EmployeeCard employee={e} key={e.id} />
         ))}
       </div>
     </div>
