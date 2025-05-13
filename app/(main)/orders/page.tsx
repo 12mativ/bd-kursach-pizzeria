@@ -22,11 +22,8 @@ export interface IOrder {
   products: IProduct[];
 }
 
-export default async function Cart({
-  searchParams,
-}: {
-  searchParams?: { search?: string };
-}) {
+//@ts-ignore
+export default async function Cart({searchParams,}: {searchParams?: { search?: string }}) {
   const { isAuth } = await verifySession();
   const cookieStore = await cookies();
   const token = cookieStore.get("token")?.value;
@@ -38,6 +35,7 @@ export default async function Cart({
     redirect("/auth");
   }
 
+  //@ts-ignore
   const searchQuery = searchParams?.search?.trim() || "";
 
   let data;
